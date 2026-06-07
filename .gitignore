@@ -27,3 +27,5 @@ build/
 
 # Optional
 .vercel
+
+.password.txt
