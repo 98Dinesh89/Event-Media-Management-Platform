@@ -9,42 +9,6 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
-    methods: ['GET', 'POST']
-  }
-})
-
-// Middlewares
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true)
-    if (
-      origin.includes('vercel.app') ||
-      origin.includes('localhost')
-    ) {
-      return callback(null, true)
-    }
-    callback(new Error('Not allowed by CORS'))
-  },
-  methods: ['GET', 'POST', 'PUT','DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}))
-app.use(express.json())
-
-// Make io accessible in routes
-app.set('io', io)
-
-// Routes
-app.use('/api/auth', require('./routes/auth'))
-app.use('/api/events', require('./routes/events'))
-app.use('/api/media', require('./routes/media'))
-app.use('/api/social', require('./routes/social'))
-app.use('/api/ai', require('./routes/ai'))
-
-// Socket.io
-require('./sockets/notificationSocket')(io)
-const io = new Server(server, {
-  cors: {
     origin: function(origin, callback) {
       if (!origin) return callback(null, true)
       if (
@@ -59,7 +23,32 @@ const io = new Server(server, {
   }
 })
 
-// Health check
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true)
+    if (
+      origin.includes('vercel.app') ||
+      origin.includes('localhost')
+    ) {
+      return callback(null, true)
+    }
+    callback(new Error('Not allowed by CORS'))
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
+app.use(express.json())
+app.set('io', io)
+
+app.use('/api/auth', require('./routes/auth'))
+app.use('/api/events', require('./routes/events'))
+app.use('/api/media', require('./routes/media'))
+app.use('/api/social', require('./routes/social'))
+app.use('/api/ai', require('./routes/ai'))
+
+require('./sockets/notificationSocket')(io)
+
 app.get('/', (req, res) => res.json({ message: 'Server is running' }))
 
 const PORT = process.env.PORT || 8080
