@@ -1,5 +1,9 @@
 const pool = require('../config/db')
 const cloudinary = require('../config/cloudinary')
+const axios = require('axios')
+
+const LUXAND_API = 'https://api.luxand.cloud'
+const LUXAND_TOKEN = process.env.LUXAND_API_KEY
 
 const searchMedia = async (req, res) => {
   const { q, event_id, tag, from_date, to_date, uploader } = req.query
@@ -49,45 +53,100 @@ const searchMedia = async (req, res) => {
 const uploadSelfie = async (req, res) => {
   try {
     const selfieUrl = req.file.path
-    await pool.query('UPDATE users SET selfie_url=$1 WHERE id=$2', [selfieUrl, req.user.id])
-    res.json({ selfie_url: selfieUrl })
+
+    // Enroll face in Luxand
+    const formData = new (require('form-data'))()
+    const imageResponse = await axios.get(selfieUrl, { responseType: 'arraybuffer' })
+    formData.append('photo', Buffer.from(imageResponse.data), {
+      filename: 'selfie.jpg',
+      contentType: 'image/jpeg'
+    })
+    formData.append('name', req.user.id)
+    formData.append('store', '1')
+
+    const luxandResponse = await axios.post(
+      `${LUXAND_API}/v2/person`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          'token': LUXAND_TOKEN
+        }
+      }
+    )
+
+    const luxandPersonId = luxandResponse.data?.uuid || null
+    console.log('Luxand person enrolled:', luxandPersonId)
+
+    // Save selfie URL and luxand person ID
+    await pool.query(
+      'UPDATE users SET selfie_url=$1, selfie_public_id=$2 WHERE id=$3',
+      [selfieUrl, luxandPersonId, req.user.id]
+    )
+
+    res.json({ selfie_url: selfieUrl, luxand_id: luxandPersonId })
   } catch (err) {
+    console.error('Selfie upload error:', err.response?.data || err.message)
     res.status(500).json({ message: err.message })
   }
 }
 
 const findMyPhotos = async (req, res) => {
   try {
-    const userResult = await pool.query('SELECT selfie_url FROM users WHERE id=$1', [req.user.id])
-    const selfieUrl = userResult.rows[0]?.selfie_url
+    const userResult = await pool.query(
+      'SELECT selfie_url, selfie_public_id FROM users WHERE id=$1',
+      [req.user.id]
+    )
+    const { selfie_url: selfieUrl, selfie_public_id: luxandPersonId } = userResult.rows[0] || {}
+
     if (!selfieUrl) return res.status(400).json({ message: 'Please upload a selfie first' })
 
-    const allMedia = await pool.query('SELECT * FROM media WHERE media_type = $1', ['image'])
+    const allMedia = await pool.query(
+      `SELECT * FROM media WHERE media_type = 'image' LIMIT 50`
+    )
+
     const matches = []
 
     for (const media of allMedia.rows) {
       try {
-        const result = await cloudinary.uploader.upload(media.url, {
-          detection: 'adv_face'
-        })
-        const selfieResult = await cloudinary.uploader.upload(selfieUrl, {
-          detection: 'adv_face'
+        const imageResponse = await axios.get(media.url, { responseType: 'arraybuffer' })
+        const formData = new (require('form-data'))()
+        formData.append('photo', Buffer.from(imageResponse.data), {
+          filename: 'photo.jpg',
+          contentType: 'image/jpeg'
         })
 
-        if (result.info?.detection?.adv_face?.data?.length > 0 &&
-            selfieResult.info?.detection?.adv_face?.data?.length > 0) {
+        const verifyResponse = await axios.post(
+          `${LUXAND_API}/v2/verify/${luxandPersonId}`,
+          formData,
+          {
+            headers: {
+              ...formData.getHeaders(),
+              'token': LUXAND_TOKEN
+            }
+          }
+        )
+
+        console.log('Verify response:', verifyResponse.data)
+
+        if (verifyResponse.data?.status === 'success' &&
+            verifyResponse.data?.probability > 0.7) {
           matches.push(media)
           await pool.query(
-            'INSERT INTO face_matches (user_id, media_id, confidence) VALUES ($1,$2,$3) ON CONFLICT DO NOTHING',
-            [req.user.id, media.id, 0.8]
+            `INSERT INTO face_matches (user_id, media_id, confidence)
+             VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
+            [req.user.id, media.id, verifyResponse.data.probability]
           )
         }
       } catch (e) {
+        console.error('Face verify error for media:', media.id, e.response?.data || e.message)
         continue
       }
     }
+
     res.json(matches)
   } catch (err) {
+    console.error('Find photos error:', err.message)
     res.status(500).json({ message: err.message })
   }
 }
