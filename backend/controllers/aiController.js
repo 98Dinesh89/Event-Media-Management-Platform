@@ -34,23 +34,51 @@ const searchMedia = async (req, res) => {
 const uploadSelfie = async (req, res) => {
   try {
     const selfieUrl = req.file.path
-    await pool.query('UPDATE users SET selfie_url=$1 WHERE id=$2', [selfieUrl, req.user.id])
-    res.json({ selfie_url: selfieUrl })
+
+    // Download selfie buffer
+    const selfieBuffer = Buffer.from(
+      (await axios.get(selfieUrl, { responseType: 'arraybuffer' })).data
+    )
+
+    // Enroll person in Luxand
+    const formData = new FormData()
+    formData.append('photo', selfieBuffer, { filename: 'selfie.jpg', contentType: 'image/jpeg' })
+    formData.append('name', req.user.id)
+    formData.append('store', '1')
+
+    const headers = { ...formData.getHeaders(), 'token': LUXAND_TOKEN }
+
+    const enrollResponse = await axios.post(
+      `${LUXAND_API}/v2/person`,
+      formData,
+      { headers }
+    )
+
+    console.log('Enroll response:', enrollResponse.data)
+    const luxandUUID = enrollResponse.data?.uuid || enrollResponse.data?.id || null
+
+    await pool.query(
+      'UPDATE users SET selfie_url=$1, selfie_public_id=$2 WHERE id=$3',
+      [selfieUrl, luxandUUID, req.user.id]
+    )
+
+    res.json({ selfie_url: selfieUrl, uuid: luxandUUID })
   } catch (err) {
-    console.error('Selfie upload error:', err.message)
+    console.error('Selfie error:', err.response?.data || err.message)
     res.status(500).json({ message: err.message })
   }
 }
 
 const findMyPhotos = async (req, res) => {
   try {
-    const userResult = await pool.query('SELECT selfie_url FROM users WHERE id=$1', [req.user.id])
-    const selfieUrl = userResult.rows[0]?.selfie_url
-    if (!selfieUrl) return res.status(400).json({ message: 'Please upload a selfie first' })
-
-    const selfieBuffer = Buffer.from(
-      (await axios.get(selfieUrl, { responseType: 'arraybuffer' })).data
+    const userResult = await pool.query(
+      'SELECT selfie_url, selfie_public_id FROM users WHERE id=$1',
+      [req.user.id]
     )
+    const { selfie_url: selfieUrl, selfie_public_id: luxandUUID } = userResult.rows[0] || {}
+
+    if (!selfieUrl) return res.status(400).json({ message: 'Please upload a selfie first' })
+    if (!luxandUUID) return res.status(400).json({ message: 'Please re-upload your selfie to enable face matching' })
 
     const allMedia = await pool.query(
       `SELECT * FROM media WHERE media_type = 'image' LIMIT 30`
@@ -65,21 +93,20 @@ const findMyPhotos = async (req, res) => {
         )
 
         const formData = new FormData()
-        formData.append('photo1', selfieBuffer, { filename: 'selfie.jpg', contentType: 'image/jpeg' })
-        formData.append('photo2', photoBuffer, { filename: 'photo.jpg', contentType: 'image/jpeg' })
+        formData.append('photo', photoBuffer, { filename: 'photo.jpg', contentType: 'image/jpeg' })
 
-        const response = await axios.post(
-          `${LUXAND_API}/photo/verify`,
-          formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-              'token': LUXAND_TOKEN
-            }
-          }
-        )
+        const formHeaders = formData.getHeaders()
+        formHeaders['token'] = LUXAND_TOKEN
 
-        console.log(`Media ${media.id} verify result:`, response.data)
+        const response = await axios({
+          method: 'POST',
+          url: `${LUXAND_API}/photo/verify/${luxandUUID}`,
+          headers: formHeaders,
+          data: formData,
+          params: { uuid: luxandUUID }
+        })
+
+        console.log(`Media ${media.id}:`, response.data)
 
         if (response.data?.status === 'success' && response.data?.probability > 0.7) {
           matches.push(media)
