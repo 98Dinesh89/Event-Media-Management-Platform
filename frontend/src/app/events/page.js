@@ -45,6 +45,7 @@ export default function EventsPage() {
   const filtered = events.filter(e =>
     e.title.toLowerCase().includes(search.toLowerCase())
   )
+  const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role))
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
@@ -54,7 +55,7 @@ export default function EventsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-lg font-semibold text-white">Events</h1>
-          {['admin', 'photographer'].includes(user?.role) && (
+          {canCreateEvent && (
             <Link
               href="/events/create"
               className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm px-4 py-2 rounded-lg transition"
@@ -138,6 +139,7 @@ export default function EventsPage() {
                       <span className="text-xs bg-[#1e1e1e] text-gray-500 px-2 py-0.5 rounded">{event.category || 'General'}</span>
                       <span className="text-xs text-gray-600">{event.media_count || 0} files</span>
                     </div>
+                    <p className="text-xs text-gray-600 mt-2">{event.club_name || 'Club'} - {event.user_role}</p>
                   </div>
                 </div>
               </Link>

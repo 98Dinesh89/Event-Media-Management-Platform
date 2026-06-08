@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import api from '@/lib/api'
@@ -9,6 +9,7 @@ import Link from 'next/link'
 export default function CreateEventPage() {
   const router = useRouter()
   const [form, setForm] = useState({
+    club_id: '',
     title: '',
     description: '',
     category: 'Photography',
@@ -17,8 +18,21 @@ export default function CreateEventPage() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [clubs, setClubs] = useState([])
 
   const categories = ['Photography', 'Workshop', 'Trip', 'Competition', 'Cultural', 'Party', 'Other']
+
+  useEffect(() => {
+    api.get('/clubs/mine')
+      .then(res => {
+        const manageable = res.data.filter(club => ['admin', 'photographer'].includes(club.role))
+        setClubs(manageable)
+        if (manageable.length > 0) {
+          setForm(prev => ({ ...prev, club_id: manageable[0].id }))
+        }
+      })
+      .catch(err => console.error(err))
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -48,6 +62,22 @@ export default function CreateEventPage() {
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 p-3 rounded-lg">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="text-sm text-gray-400 mb-1.5 block">Club</label>
+            <select
+              value={form.club_id}
+              onChange={e => setForm({...form, club_id: e.target.value})}
+              className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+              required
+            >
+              {clubs.length === 0 ? (
+                <option value="">No clubs available</option>
+              ) : (
+                clubs.map(club => <option key={club.id} value={club.id}>{club.name} - {club.role}</option>)
+              )}
+            </select>
+          </div>
+
           <div>
             <label className="text-sm text-gray-400 mb-1.5 block">Event title</label>
             <input

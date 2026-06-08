@@ -111,7 +111,7 @@ export default function EventPage() {
     }
   }
 
-  const canUpload = ['admin', 'photographer'].includes(user?.role)
+  const canUpload = event?.user_role === 'admin' || (event?.user_role === 'photographer' && event?.created_by === user?.id)
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
@@ -137,6 +137,9 @@ export default function EventPage() {
                   </span>
                 </div>
                 <h1 className="text-xl font-semibold text-white mb-1">{event.title}</h1>
+                {event.club_name && (
+                  <p className="text-gray-600 text-xs mb-1">{event.club_name} - {event.user_role}</p>
+                )}
                 <p className="text-gray-500 text-sm max-w-xl">{event.description}</p>
                 {event.event_date && (
                   <p className="flex items-center gap-1.5 text-xs text-gray-600 mt-2">
@@ -275,7 +278,7 @@ export default function EventPage() {
                 ))}
               </div>
             ) : (
-              <MediaGrid media={media} onMediaDeleted={() => fetchMedia(1)} />
+              <MediaGrid media={media} onMediaDeleted={() => fetchMedia(1)} eventRole={event?.user_role} />
             )}
 
             {hasMore && media.length > 0 && (

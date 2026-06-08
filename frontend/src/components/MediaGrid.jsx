@@ -4,7 +4,7 @@ import { Heart, Download, Bookmark, Trash2, X, UserPlus } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import api from '@/lib/api'
 
-export default function MediaGrid({ media, onMediaDeleted }) {
+export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
   const { user } = useAuth()
   const [selected, setSelected] = useState(null)
   const [likes, setLikes] = useState({})
@@ -254,7 +254,7 @@ export default function MediaGrid({ media, onMediaDeleted }) {
                 <Download size={16} />
               </button>
 
-              {(user?.id === selected.uploaded_by || user?.role === 'admin') && (
+              {(user?.id === selected.uploaded_by || eventRole === 'admin' || selected.user_role === 'admin') && (
                 <button
                   onClick={() => handleDelete(selected.id)}
                   className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 transition ml-auto"

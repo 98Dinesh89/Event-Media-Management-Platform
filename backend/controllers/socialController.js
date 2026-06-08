@@ -1,8 +1,20 @@
 const pool = require('../config/db')
+const { getEventAccess } = require('../utils/clubPermissions')
+
+const getMediaAccess = async (userId, mediaId) => {
+  const media = await pool.query('SELECT * FROM media WHERE id=$1', [mediaId])
+  if (media.rows.length === 0) return { media: null, access: null }
+  const access = await getEventAccess(userId, media.rows[0].event_id)
+  return { media: media.rows[0], access }
+}
 
 const toggleLike = async (req, res) => {
   const { media_id } = req.body
   try {
+    const { media, access } = await getMediaAccess(req.user.id, media_id)
+    if (!media) return res.status(404).json({ message: 'Media not found' })
+    if (!access?.canView || !access.canViewMedia(media)) return res.status(403).json({ message: 'Access denied' })
+
     const existing = await pool.query('SELECT * FROM likes WHERE user_id=$1 AND media_id=$2', [req.user.id, media_id])
     if (existing.rows.length > 0) {
       await pool.query('DELETE FROM likes WHERE user_id=$1 AND media_id=$2', [req.user.id, media_id])
@@ -11,14 +23,13 @@ const toggleLike = async (req, res) => {
     await pool.query('INSERT INTO likes (user_id, media_id) VALUES ($1,$2)', [req.user.id, media_id])
 
     // Notify media owner
-    const media = await pool.query('SELECT uploaded_by FROM media WHERE id=$1', [media_id])
-    if (media.rows[0].uploaded_by !== req.user.id) {
+    if (media.uploaded_by !== req.user.id) {
       await pool.query(
         'INSERT INTO notifications (user_id, from_user_id, type, media_id, message) VALUES ($1,$2,$3,$4,$5)',
-        [media.rows[0].uploaded_by, req.user.id, 'like', media_id, 'liked your photo']
+        [media.uploaded_by, req.user.id, 'like', media_id, 'liked your photo']
       )
       const io = req.app.get('io')
-      io.to(media.rows[0].uploaded_by).emit('notification', { type: 'like', media_id })
+      io.to(media.uploaded_by).emit('notification', { type: 'like', media_id })
     }
     res.json({ liked: true })
   } catch (err) {
@@ -29,18 +40,21 @@ const toggleLike = async (req, res) => {
 const addComment = async (req, res) => {
   const { media_id, text } = req.body
   try {
+    const { media, access } = await getMediaAccess(req.user.id, media_id)
+    if (!media) return res.status(404).json({ message: 'Media not found' })
+    if (!access?.canView || !access.canViewMedia(media)) return res.status(403).json({ message: 'Access denied' })
+
     const result = await pool.query(
       'INSERT INTO comments (user_id, media_id, text) VALUES ($1,$2,$3) RETURNING *',
       [req.user.id, media_id, text]
     )
-    const media = await pool.query('SELECT uploaded_by FROM media WHERE id=$1', [media_id])
-    if (media.rows[0].uploaded_by !== req.user.id) {
+    if (media.uploaded_by !== req.user.id) {
       await pool.query(
         'INSERT INTO notifications (user_id, from_user_id, type, media_id, message) VALUES ($1,$2,$3,$4,$5)',
-        [media.rows[0].uploaded_by, req.user.id, 'comment', media_id, 'commented on your photo']
+        [media.uploaded_by, req.user.id, 'comment', media_id, 'commented on your photo']
       )
       const io = req.app.get('io')
-      io.to(media.rows[0].uploaded_by).emit('notification', { type: 'comment', media_id })
+      io.to(media.uploaded_by).emit('notification', { type: 'comment', media_id })
     }
     res.status(201).json(result.rows[0])
   } catch (err) {
@@ -50,6 +64,10 @@ const addComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   try {
+    const { media, access } = await getMediaAccess(req.user.id, req.params.mediaId)
+    if (!media) return res.status(404).json({ message: 'Media not found' })
+    if (!access?.canView || !access.canViewMedia(media)) return res.status(403).json({ message: 'Access denied' })
+
     const result = await pool.query(
       `SELECT c.*, u.name, u.avatar_url FROM comments c
        LEFT JOIN users u ON c.user_id = u.id
@@ -66,6 +84,10 @@ const toggleFavourite = async (req, res) => {
   const { media_id } = req.body
   console.log('Toggle favourite - user:', req.user.id, 'media:', media_id)
   try {
+    const { media, access } = await getMediaAccess(req.user.id, media_id)
+    if (!media) return res.status(404).json({ message: 'Media not found' })
+    if (!access?.canView || !access.canViewMedia(media)) return res.status(403).json({ message: 'Access denied' })
+
     const existing = await pool.query('SELECT * FROM favourites WHERE user_id=$1 AND media_id=$2', [req.user.id, media_id])
     console.log('Existing favourite:', existing.rows.length)
     if (existing.rows.length > 0) {
@@ -111,7 +133,16 @@ const getFavourites = async (req, res) => {
     const result = await pool.query(
       `SELECT m.* FROM favourites f
        JOIN media m ON f.media_id = m.id
+       JOIN events e ON m.event_id = e.id
+       LEFT JOIN club_members cm ON cm.club_id = e.club_id AND cm.user_id = $1
        WHERE f.user_id = $1
+       AND (
+         (m.is_public = true AND e.is_public = true)
+         OR m.uploaded_by = $1
+         OR cm.role = 'admin'
+         OR cm.role = 'member'
+         OR (cm.role = 'photographer' AND e.created_by = $1)
+       )
        ORDER BY f.created_at DESC`,
       [req.user.id]
     )
@@ -126,6 +157,10 @@ const getFavourites = async (req, res) => {
 const tagUser = async (req, res) => {
   const { media_id, tagged_user_id } = req.body
   try {
+    const { media, access } = await getMediaAccess(req.user.id, media_id)
+    if (!media) return res.status(404).json({ message: 'Media not found' })
+    if (!access?.canView || !access.canViewMedia(media)) return res.status(403).json({ message: 'Access denied' })
+
     // Check user exists
     const userCheck = await pool.query('SELECT id, name FROM users WHERE id = $1', [tagged_user_id])
     if (userCheck.rows.length === 0) return res.status(404).json({ message: 'User not found' })

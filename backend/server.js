@@ -42,6 +42,7 @@ app.use(express.json())
 app.set('io', io)
 
 app.use('/api/auth', require('./routes/auth'))
+app.use('/api/clubs', require('./routes/clubs'))
 app.use('/api/events', require('./routes/events'))
 app.use('/api/media', require('./routes/media'))
 app.use('/api/social', require('./routes/social'))

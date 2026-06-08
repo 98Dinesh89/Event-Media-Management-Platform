@@ -14,7 +14,7 @@ const searchMedia = async (req, res) => {
       FROM media m
       LEFT JOIN users u ON m.uploaded_by = u.id
       LEFT JOIN events e ON m.event_id = e.id
-      WHERE m.is_public = true
+      WHERE m.is_public = true AND e.is_public = true
     `
     const params = []
     if (q) { params.push(`%${q}%`); query += ` AND (e.title ILIKE $${params.length} OR m.caption ILIKE $${params.length})` }
@@ -103,10 +103,20 @@ const findMyPhotos = async (req, res) => {
     const checkedIds = alreadyChecked.rows.map(r => r.media_id)
 
     const allMedia = await pool.query(
-      `SELECT * FROM media WHERE media_type = 'image' 
-       ${checkedIds.length > 0 ? `AND id != ALL($1::uuid[])` : ''}
+      `SELECT m.* FROM media m
+       JOIN events e ON m.event_id = e.id
+       LEFT JOIN club_members cm ON cm.club_id = e.club_id AND cm.user_id = $${checkedIds.length > 0 ? 2 : 1}
+       WHERE m.media_type = 'image'
+       AND (
+         (m.is_public = true AND e.is_public = true)
+         OR m.uploaded_by = $${checkedIds.length > 0 ? 2 : 1}
+         OR cm.role = 'admin'
+         OR cm.role = 'member'
+         OR (cm.role = 'photographer' AND e.created_by = $${checkedIds.length > 0 ? 2 : 1})
+       )
+       ${checkedIds.length > 0 ? `AND m.id != ALL($1::uuid[])` : ''}
        LIMIT 5`,
-      checkedIds.length > 0 ? [checkedIds] : []
+      checkedIds.length > 0 ? [checkedIds, req.user.id] : [req.user.id]
     )
 
     console.log(`Scanning ${allMedia.rows.length} new images`)
@@ -150,7 +160,16 @@ const findMyPhotos = async (req, res) => {
     const previousMatches = await pool.query(
       `SELECT m.* FROM face_matches fm
       JOIN media m ON fm.media_id = m.id
-      WHERE fm.user_id = $1 AND fm.confidence > 0.7`,
+      JOIN events e ON m.event_id = e.id
+      LEFT JOIN club_members cm ON cm.club_id = e.club_id AND cm.user_id = $1
+      WHERE fm.user_id = $1 AND fm.confidence > 0.7
+      AND (
+        (m.is_public = true AND e.is_public = true)
+        OR m.uploaded_by = $1
+        OR cm.role = 'admin'
+        OR cm.role = 'member'
+        OR (cm.role = 'photographer' AND e.created_by = $1)
+      )`,
       [req.user.id]
     )
 
@@ -169,7 +188,16 @@ const getMyFaceMatches = async (req, res) => {
     const result = await pool.query(
       `SELECT DISTINCT m.* FROM face_matches fm
        JOIN media m ON fm.media_id = m.id
+       JOIN events e ON m.event_id = e.id
+       LEFT JOIN club_members cm ON cm.club_id = e.club_id AND cm.user_id = $1
        WHERE fm.user_id = $1 AND fm.confidence > 0.7
+       AND (
+         (m.is_public = true AND e.is_public = true)
+         OR m.uploaded_by = $1
+         OR cm.role = 'admin'
+         OR cm.role = 'member'
+         OR (cm.role = 'photographer' AND e.created_by = $1)
+       )
        ORDER BY m.created_at DESC`,
       [req.user.id]
     )

@@ -35,6 +35,11 @@ export default function Dashboard() {
     fetchData()
   }, [])
 
+  const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role))
+  const roleSummary = user?.clubs?.length
+    ? `${user.clubs.length} club${user.clubs.length === 1 ? '' : 's'}`
+    : 'Viewer'
+
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
       <Navbar />
@@ -50,7 +55,7 @@ export default function Dashboard() {
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          {(user?.role === 'admin' || user?.role === 'photographer' || user?.role === 'member') && (
+          {canCreateEvent && (
             <Link
               href="/events/create"
               className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm px-4 py-2 rounded-lg transition"
@@ -65,7 +70,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             { label: 'Total Events', value: String(events.length), icon: Calendar },
-            { label: 'Your Role', value: user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Loading', icon: Tag },
+            { label: 'Club Roles', value: roleSummary, icon: Tag },
             { label: 'Media Uploaded', value: '0', icon: Image },
             ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-4">
@@ -96,7 +101,7 @@ export default function Dashboard() {
           <div className="border border-dashed border-[#2a2a2a] rounded-xl p-12 text-center">
             <Calendar size={28} className="text-gray-600 mx-auto mb-3" />
             <p className="text-gray-500 text-sm">No events yet</p>
-            {(user?.role === 'admin' || user?.role === 'member') && (
+            {canCreateEvent && (
               <Link href="/events/create" className="text-purple-400 text-sm hover:underline mt-2 inline-block">
                 Create your first event
               </Link>
