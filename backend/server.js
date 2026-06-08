@@ -43,6 +43,21 @@ app.use('/api/ai', require('./routes/ai'))
 
 // Socket.io
 require('./sockets/notificationSocket')(io)
+const io = new Server(server, {
+  cors: {
+    origin: function(origin, callback) {
+      if (!origin) return callback(null, true)
+      if (
+        origin.includes('vercel.app') ||
+        origin.includes('localhost')
+      ) {
+        return callback(null, true)
+      }
+      callback(new Error('Not allowed by CORS'))
+    },
+    methods: ['GET', 'POST']
+  }
+})
 
 // Health check
 app.get('/', (req, res) => res.json({ message: 'Server is running' }))
