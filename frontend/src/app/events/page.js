@@ -54,7 +54,7 @@ export default function EventsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-lg font-semibold text-white">Events</h1>
-          {['admin', 'photographer', 'member'].includes(user?.role) && (
+          {['admin', 'photographer'].includes(user?.role) && (
             <Link
               href="/events/create"
               className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm px-4 py-2 rounded-lg transition"

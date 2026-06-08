@@ -21,9 +21,9 @@ const getAllEvents = async (req, res) => {
     FROM events e
     LEFT JOIN users u ON e.created_by = u.id
     LEFT JOIN media m ON m.event_id = e.id
-    WHERE (e.is_public = true OR e.created_by = $1)
+    WHERE (e.is_public = true OR e.created_by = $1 OR $2 = 'admin')
   `
-  const params = [req.user?.id || null]
+  const params = [req.user?.id || null, req.user?.role || 'viewer']
 
   if (category) {
     params.push(category)

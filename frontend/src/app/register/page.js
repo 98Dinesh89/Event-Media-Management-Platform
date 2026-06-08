@@ -77,7 +77,6 @@ export default function RegisterPage() {
               className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
             >
               <option value="viewer">Viewer</option>
-              <option value="member">Club Member</option>
               <option value="photographer">Photographer</option>
               <option value="admin">Admin</option>
             </select>
