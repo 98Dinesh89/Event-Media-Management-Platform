@@ -13,16 +13,15 @@ const uploadMedia = async (req, res) => {
       try {
         const resource = await cloudinary.api.resource(file.filename, {
           image_metadata: true,
-          colors: true,
           faces: true
         })
-        // Use Cloudinary colors as pseudo-tags
-        if (resource.colors) {
-          const dominantColors = resource.colors.slice(0, 3).map(c => c[0])
-          tags = dominantColors
-        }
         if (resource.faces && resource.faces.length > 0) {
-          tags.push('people')
+          tags.push('people', 'faces')
+        }
+        if (resource.image_metadata) {
+          const { PixelXDimension, PixelYDimension } = resource.image_metadata
+          if (PixelXDimension > PixelYDimension) tags.push('landscape')
+          else tags.push('portrait')
         }
       } catch (e) {
         tags = []
@@ -116,10 +115,9 @@ const deleteMedia = async (req, res) => {
 const downloadMedia = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT m.*, e.title as event_title, u.role as uploader_role
+      `SELECT m.*, e.title as event_title
        FROM media m 
        LEFT JOIN events e ON m.event_id = e.id
-       LEFT JOIN users u ON m.uploaded_by = u.id
        WHERE m.id = $1`,
       [req.params.id]
     )
@@ -127,42 +125,19 @@ const downloadMedia = async (req, res) => {
 
     const media = result.rows[0]
     const axios = require('axios')
-    const sharp = require('sharp')
 
-    const response = await axios.get(media.url, { responseType: 'arraybuffer' })
+    // Use Cloudinary URL transformation for watermark
+    const watermarkedUrl = media.url.replace(
+      '/upload/',
+      `/upload/l_text:Arial_24_bold:${encodeURIComponent(media.event_title || 'MediaVault')},co_white,o_60,g_south,y_10/`
+    )
+
+    const response = await axios.get(watermarkedUrl, { responseType: 'arraybuffer' })
     const imageBuffer = Buffer.from(response.data)
-
-    const imageInfo = await sharp(imageBuffer).metadata()
-    const width = imageInfo.width || 800
-
-    const watermarkText = `${media.event_title || 'MediaVault'} | mediavault.app`
-    const fontSize = Math.max(16, Math.floor(width / 40))
-    const padding = 10
-
-    const svgWatermark = Buffer.from(`
-      <svg width="${width}" height="${fontSize + padding * 2}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="${width}" height="${fontSize + padding * 2}" fill="rgba(0,0,0,0.55)"/>
-        <text 
-          x="${padding}" 
-          y="${fontSize + padding + 4}" 
-          font-size="${fontSize}px" 
-          fill="white"
-          font-family="sans-serif"
-        >${watermarkText}</text>
-      </svg>
-    `)
-
-    const watermarkedImage = await sharp(imageBuffer)
-      .composite([{
-        input: svgWatermark,
-        gravity: 'south'
-      }])
-      .jpeg({ quality: 90 })
-      .toBuffer()
 
     res.set('Content-Disposition', `attachment; filename="mediavault-${media.event_title || 'photo'}.jpg"`)
     res.set('Content-Type', 'image/jpeg')
-    res.send(watermarkedImage)
+    res.send(imageBuffer)
   } catch (err) {
     console.error('Download error:', err.message)
     res.status(500).json({ message: err.message })
