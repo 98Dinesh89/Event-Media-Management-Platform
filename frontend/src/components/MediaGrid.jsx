@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Heart, Download, Bookmark, Trash2, X } from 'lucide-react'
+import { Heart, Download, Bookmark, Trash2, X, UserPlus } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import api from '@/lib/api'
 
@@ -12,6 +12,9 @@ export default function MediaGrid({ media, onMediaDeleted }) {
   const [comments, setComments] = useState([])
   const [commentText, setCommentText] = useState('')
   const [loadingComments, setLoadingComments] = useState(false)
+  const [showTagSearch, setShowTagSearch] = useState(false)
+  const [tagSearch, setTagSearch] = useState('')
+  const [tagResults, setTagResults] = useState([])
 
   // Load initial like/favourite state when media changes
   useEffect(() => {
@@ -94,6 +97,28 @@ export default function MediaGrid({ media, onMediaDeleted }) {
     }
   }
 
+  const searchUsersForTag = async (q) => {
+    if (!q.trim()) return setTagResults([])
+    try {
+      const res = await api.get(`/social/search-users?q=${q}`)
+      setTagResults(res.data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handleTagUser = async (taggedUserId) => {
+    try {
+      await api.post('/social/tag', { media_id: selected.id, tagged_user_id: taggedUserId })
+      setShowTagSearch(false)
+      setTagSearch('')
+      setTagResults([])
+      alert('User tagged!')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   if (media.length === 0) {
     return (
       <div className="border border-dashed border-[#2a2a2a] rounded-xl p-16 text-center">
@@ -168,7 +193,7 @@ export default function MediaGrid({ media, onMediaDeleted }) {
             </div>
 
             {/* Actions */}
-            <div className="p-4 border-b border-[#1e1e1e] flex items-center gap-2">
+            <div className="p-4 border-b border-[#1e1e1e] flex items-center gap-2 relative">
               <button
                 onClick={() => handleLike(selected.id)}
                 className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition ${
@@ -189,6 +214,38 @@ export default function MediaGrid({ media, onMediaDeleted }) {
               >
                 <Bookmark size={16} fill={favourites[selected.id] ? 'currentColor' : 'none'} />
               </button>
+
+              <button
+                onClick={() => setShowTagSearch(!showTagSearch)}
+                className="p-1.5 rounded-lg text-gray-500 hover:text-white transition"
+              >
+                <UserPlus size={16} />
+              </button>
+
+              {showTagSearch && (
+                <div className="absolute top-12 left-0 w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-2 z-10">
+                  <input
+                    type="text"
+                    value={tagSearch}
+                    onChange={e => { setTagSearch(e.target.value); searchUsersForTag(e.target.value) }}
+                    placeholder="Search users to tag..."
+                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded px-2 py-1.5 text-xs text-white focus:outline-none mb-2"
+                  />
+                  {tagResults.map(u => (
+                    <div
+                      key={u.id}
+                      onClick={() => handleTagUser(u.id)}
+                      className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#2a2a2a] rounded cursor-pointer"
+                    >
+                      <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
+                        <span className="text-xs text-white">{u.name[0].toUpperCase()}</span>
+                      </div>
+                      <span className="text-xs text-white">{u.name}</span>
+                      <span className="text-xs text-gray-500 ml-auto">{u.role}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <button
                 onClick={() => handleDownload(selected.id)}

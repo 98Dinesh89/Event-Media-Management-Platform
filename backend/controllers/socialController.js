@@ -123,4 +123,43 @@ const getFavourites = async (req, res) => {
   }
 }
 
-module.exports = { toggleLike, addComment, getComments, toggleFavourite, getFavourites, getNotifications, markNotificationsRead }
+const tagUser = async (req, res) => {
+  const { media_id, tagged_user_id } = req.body
+  try {
+    // Check user exists
+    const userCheck = await pool.query('SELECT id, name FROM users WHERE id = $1', [tagged_user_id])
+    if (userCheck.rows.length === 0) return res.status(404).json({ message: 'User not found' })
+
+    await pool.query(
+      'INSERT INTO media_tags (media_id, tagged_by, tagged_user_id) VALUES ($1,$2,$3) ON CONFLICT DO NOTHING',
+      [media_id, req.user.id, tagged_user_id]
+    )
+
+    // Notify tagged user
+    await pool.query(
+      'INSERT INTO notifications (user_id, from_user_id, type, media_id, message) VALUES ($1,$2,$3,$4,$5)',
+      [tagged_user_id, req.user.id, 'tag', media_id, 'tagged you in a photo']
+    )
+    const io = req.app.get('io')
+    io.to(tagged_user_id).emit('notification', { type: 'tag', media_id })
+
+    res.json({ message: 'User tagged' })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+const searchUsers = async (req, res) => {
+  const { q } = req.query
+  try {
+    const result = await pool.query(
+      'SELECT id, name, role FROM users WHERE name ILIKE $1 LIMIT 5',
+      [`%${q}%`]
+    )
+    res.json(result.rows)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+module.exports = { toggleLike, addComment, getComments, toggleFavourite, getFavourites, getNotifications, markNotificationsRead, tagUser, searchUsers }

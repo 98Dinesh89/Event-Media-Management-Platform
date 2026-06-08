@@ -55,6 +55,8 @@ const getMediaByEvent = async (req, res) => {
   const { page = 1, limit = 20 } = req.query
   const offset = (page - 1) * limit
   const userId = req.user?.id || null
+  const userRole = req.user?.role || 'viewer'
+
   try {
     const result = await pool.query(
       `SELECT m.*, u.name as uploader_name,
@@ -66,11 +68,17 @@ const getMediaByEvent = async (req, res) => {
        LEFT JOIN likes l ON l.media_id = m.id
        LEFT JOIN likes l2 ON l2.media_id = m.id AND l2.user_id = $2
        LEFT JOIN favourites f ON f.media_id = m.id AND f.user_id = $2
-       WHERE m.event_id = $1 AND (m.is_public = true OR m.uploaded_by = $2)
+       WHERE m.event_id = $1 
+       AND (
+         m.is_public = true 
+         OR m.uploaded_by = $2 
+         OR $3 = 'admin'
+         OR $3 = 'member'
+       )
        GROUP BY m.id, u.name
        ORDER BY m.created_at DESC
-       LIMIT $3 OFFSET $4`,
-      [req.params.eventId, userId, limit, offset]
+       LIMIT $4 OFFSET $5`,
+      [req.params.eventId, userId, userRole, limit, offset]
     )
     res.json(result.rows)
   } catch (err) {
@@ -115,27 +123,32 @@ const deleteMedia = async (req, res) => {
 const downloadMedia = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT m.*, e.title as event_title
+      `SELECT m.*, e.title as event_title, u.role as downloader_role, u.name as downloader_name
        FROM media m 
        LEFT JOIN events e ON m.event_id = e.id
+       LEFT JOIN users u ON u.id = $2
        WHERE m.id = $1`,
-      [req.params.id]
+      [req.params.id, req.user.id]
     )
     if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' })
 
     const media = result.rows[0]
     const axios = require('axios')
 
-    // Use Cloudinary URL transformation for watermark
+    const clubName = 'MediaVault'
+    const eventName = media.event_title || 'Event'
+    const userRole = media.downloader_role || 'viewer'
+    const watermarkText = `${clubName} | ${eventName} | ${userRole}`
+
     const watermarkedUrl = media.url.replace(
       '/upload/',
-      `/upload/l_text:Arial_24_bold:${encodeURIComponent(media.event_title || 'MediaVault')},co_white,o_60,g_south,y_10/`
+      `/upload/l_text:Arial_20_bold:${encodeURIComponent(watermarkText)},co_white,o_70,g_south,y_10,b_rgb:000000,bo_10px_solid_rgb:000000/`
     )
 
     const response = await axios.get(watermarkedUrl, { responseType: 'arraybuffer' })
     const imageBuffer = Buffer.from(response.data)
 
-    res.set('Content-Disposition', `attachment; filename="mediavault-${media.event_title || 'photo'}.jpg"`)
+    res.set('Content-Disposition', `attachment; filename="${clubName}-${eventName}.jpg"`)
     res.set('Content-Type', 'image/jpeg')
     res.send(imageBuffer)
   } catch (err) {

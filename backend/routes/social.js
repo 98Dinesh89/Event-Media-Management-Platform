@@ -1,8 +1,9 @@
 const router = require('express').Router()
-const { toggleLike, addComment, getComments, toggleFavourite, getFavourites, getNotifications, markNotificationsRead } = require('../controllers/socialController')
+const { toggleLike, addComment, getComments, toggleFavourite, getFavourites, getNotifications, markNotificationsRead, tagUser, searchUsers } = require('../controllers/socialController')
 const auth = require('../middlewares/auth')
 
-
+router.post('/tag', auth, tagUser)
+router.get('/search-users', auth, searchUsers)
 router.get('/favourites', auth, getFavourites)
 router.post('/like', auth, toggleLike)
 router.post('/comment', auth, addComment)

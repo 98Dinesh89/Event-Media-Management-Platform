@@ -78,6 +78,7 @@ export default function RegisterPage() {
             >
               <option value="viewer">Viewer</option>
               <option value="photographer">Photographer</option>
+              <option value="member">Club Member</option>
               <option value="admin">Admin</option>
             </select>
           </div>

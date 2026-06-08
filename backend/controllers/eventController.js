@@ -15,15 +15,23 @@ const createEvent = async (req, res) => {
 
 const getAllEvents = async (req, res) => {
   const { sort, category } = req.query
+  const userId = req.user?.id || null
+  const userRole = req.user?.role || 'viewer'
+
   let query = `
     SELECT e.*, u.name as creator_name,
     COUNT(m.id) as media_count
     FROM events e
     LEFT JOIN users u ON e.created_by = u.id
     LEFT JOIN media m ON m.event_id = e.id
-    WHERE (e.is_public = true OR e.created_by = $1 OR $2 = 'admin')
+    WHERE (
+      e.is_public = true 
+      OR e.created_by = $1 
+      OR $2 = 'admin'
+      OR $2 = 'member'
+    )
   `
-  const params = [req.user?.id || null, req.user?.role || 'viewer']
+  const params = [userId, userRole]
 
   if (category) {
     params.push(category)
