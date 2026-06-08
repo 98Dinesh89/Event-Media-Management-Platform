@@ -124,12 +124,18 @@ const findMyPhotos = async (req, res) => {
           { headers: { ...formData.getHeaders(), 'token': LUXAND_TOKEN } }
         )
 
-        // Always save to face_matches (even failures) so we don't rescan
+        const probability = response.data?.probability || 0
+
+        // Save all checked media with their confidence (0 = checked but no match)
         await pool.query(
           `INSERT INTO face_matches (user_id, media_id, confidence)
-           VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
-          [req.user.id, media.id, response.data?.probability || 0]
+          VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
+          [req.user.id, media.id, probability]
         )
+
+        if (response.data?.status === 'success' && probability > 0.7) {
+          matches.push(media)
+        }
 
         if (response.data?.status === 'success' && response.data?.probability > 0.7) {
           matches.push(media)
@@ -161,10 +167,10 @@ const findMyPhotos = async (req, res) => {
 const getMyFaceMatches = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT m.* FROM face_matches fm
+      `SELECT DISTINCT m.* FROM face_matches fm
        JOIN media m ON fm.media_id = m.id
-       WHERE fm.user_id = $1
-       ORDER BY fm.created_at DESC`,
+       WHERE fm.user_id = $1 AND fm.confidence > 0.7
+       ORDER BY m.created_at DESC`,
       [req.user.id]
     )
     res.json(result.rows)
