@@ -47,6 +47,8 @@ const uploadSelfie = async (req, res) => {
         params: {},
       }
     )
+
+    await pool.query('DELETE FROM face_matches WHERE user_id=$1', [req.user.id])
     
     // Need to add photo separately via multipart
     const FormData = require('form-data')
