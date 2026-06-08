@@ -133,10 +133,6 @@ const findMyPhotos = async (req, res) => {
           [req.user.id, media.id, probability]
         )
 
-        if (response.data?.status === 'success' && probability > 0.7) {
-          matches.push(media)
-        }
-
         if (response.data?.status === 'success' && response.data?.probability > 0.7) {
           matches.push(media)
         }
@@ -154,10 +150,12 @@ const findMyPhotos = async (req, res) => {
       [req.user.id]
     )
 
-    const allMatchIds = new Set(matches.map(m => m.id))
-    const dedupedPrevious = previousMatches.rows.filter(m => !allMatchIds.has(m.id))
+    const uniqueMatches = new Map()
+    for (const media of [...matches, ...previousMatches.rows]) {
+      uniqueMatches.set(media.id, media)
+    }
 
-    res.json([...matches, ...dedupedPrevious])
+    res.json([...uniqueMatches.values()])
   } catch (err) {
     console.error('Find photos error:', err.message)
     res.status(500).json({ message: err.message })
