@@ -93,12 +93,23 @@ const findMyPhotos = async (req, res) => {
     if (!selfieUrl) return res.status(400).json({ message: 'Please upload a selfie first' })
     if (!luxandUUID) return res.status(400).json({ message: 'Please re-upload your selfie' })
 
+    // Only scan images NOT already checked for this user
+    const alreadyChecked = await pool.query(
+      'SELECT media_id FROM face_matches WHERE user_id=$1',
+      [req.user.id]
+    )
+    const checkedIds = alreadyChecked.rows.map(r => r.media_id)
+
     const allMedia = await pool.query(
-      `SELECT * FROM media WHERE media_type = 'image' LIMIT 30`
+      `SELECT * FROM media WHERE media_type = 'image' 
+       ${checkedIds.length > 0 ? `AND id != ALL($1::uuid[])` : ''}
+       LIMIT 20`,
+      checkedIds.length > 0 ? [checkedIds] : []
     )
 
-    const matches = []
+    console.log(`Scanning ${allMedia.rows.length} new images`)
 
+    const matches = []
     for (const media of allMedia.rows) {
       try {
         const FormData = require('form-data')
@@ -108,23 +119,18 @@ const findMyPhotos = async (req, res) => {
         const response = await axios.post(
           `${LUXAND_API}/photo/verify/${luxandUUID}`,
           formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-              'token': LUXAND_TOKEN
-            }
-          }
+          { headers: { ...formData.getHeaders(), 'token': LUXAND_TOKEN } }
         )
 
-        console.log(`Media ${media.id}:`, response.data)
+        // Always save to face_matches (even failures) so we don't rescan
+        await pool.query(
+          `INSERT INTO face_matches (user_id, media_id, confidence)
+           VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
+          [req.user.id, media.id, response.data?.probability || 0]
+        )
 
         if (response.data?.status === 'success' && response.data?.probability > 0.7) {
           matches.push(media)
-          await pool.query(
-            `INSERT INTO face_matches (user_id, media_id, confidence)
-             VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
-            [req.user.id, media.id, response.data.probability]
-          )
         }
       } catch (e) {
         console.error('Verify error:', e.response?.data || e.message)
@@ -132,7 +138,15 @@ const findMyPhotos = async (req, res) => {
       }
     }
 
-    res.json(matches)
+    // Return all previously matched photos too
+    const previousMatches = await pool.query(
+      `SELECT m.* FROM face_matches fm
+       JOIN media m ON fm.media_id = m.id
+       WHERE fm.user_id = $1 AND fm.confidence > 0.7`,
+      [req.user.id]
+    )
+
+    res.json([...matches, ...previousMatches.rows])
   } catch (err) {
     console.error('Find photos error:', err.message)
     res.status(500).json({ message: err.message })
