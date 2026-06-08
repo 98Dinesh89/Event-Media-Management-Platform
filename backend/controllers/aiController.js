@@ -103,7 +103,7 @@ const findMyPhotos = async (req, res) => {
     const allMedia = await pool.query(
       `SELECT * FROM media WHERE media_type = 'image' 
        ${checkedIds.length > 0 ? `AND id != ALL($1::uuid[])` : ''}
-       LIMIT 20`,
+       LIMIT 5`,
       checkedIds.length > 0 ? [checkedIds] : []
     )
 
@@ -141,12 +141,15 @@ const findMyPhotos = async (req, res) => {
     // Return all previously matched photos too
     const previousMatches = await pool.query(
       `SELECT m.* FROM face_matches fm
-       JOIN media m ON fm.media_id = m.id
-       WHERE fm.user_id = $1 AND fm.confidence > 0.7`,
+      JOIN media m ON fm.media_id = m.id
+      WHERE fm.user_id = $1 AND fm.confidence > 0.7`,
       [req.user.id]
     )
 
-    res.json([...matches, ...previousMatches.rows])
+    const allMatchIds = new Set(matches.map(m => m.id))
+    const dedupedPrevious = previousMatches.rows.filter(m => !allMatchIds.has(m.id))
+
+    res.json([...matches, ...dedupedPrevious])
   } catch (err) {
     console.error('Find photos error:', err.message)
     res.status(500).json({ message: err.message })
