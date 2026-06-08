@@ -11,10 +11,19 @@ const uploadMedia = async (req, res) => {
     for (const file of files) {
       let tags = []
       try {
-        const tagResult = await cloudinary.api.resource(file.filename, {
-          tags: true
+        const resource = await cloudinary.api.resource(file.filename, {
+          image_metadata: true,
+          colors: true,
+          faces: true
         })
-        tags = tagResult.tags || []
+        // Use Cloudinary colors as pseudo-tags
+        if (resource.colors) {
+          const dominantColors = resource.colors.slice(0, 3).map(c => c[0])
+          tags = dominantColors
+        }
+        if (resource.faces && resource.faces.length > 0) {
+          tags.push('people')
+        }
       } catch (e) {
         tags = []
       }
@@ -131,15 +140,14 @@ const downloadMedia = async (req, res) => {
     const padding = 10
 
     const svgWatermark = Buffer.from(`
-      <svg width="${width}" height="${fontSize + padding * 2}">
+      <svg width="${width}" height="${fontSize + padding * 2}" xmlns="http://www.w3.org/2000/svg">
         <rect width="${width}" height="${fontSize + padding * 2}" fill="rgba(0,0,0,0.55)"/>
         <text 
           x="${padding}" 
-          y="${fontSize + padding - 2}" 
-          font-size="${fontSize}" 
-          fill="white" 
-          font-family="Arial, sans-serif"
-          font-weight="bold"
+          y="${fontSize + padding + 4}" 
+          font-size="${fontSize}px" 
+          fill="white"
+          font-family="sans-serif"
         >${watermarkText}</text>
       </svg>
     `)
