@@ -9,12 +9,10 @@ const uploadMedia = async (req, res) => {
 
     const results = []
     for (const file of files) {
-      // Get AI tags from Cloudinary using categorization after upload
       let tags = []
       try {
         const tagResult = await cloudinary.api.resource(file.filename, {
-          tags: true,
-          categorization: 'google_tagging'
+          tags: true
         })
         tags = tagResult.tags || []
       } catch (e) {

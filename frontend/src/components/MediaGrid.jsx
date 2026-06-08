@@ -116,9 +116,14 @@ export default function MediaGrid({ media, onMediaDeleted }) {
             ) : (
               <img src={item.thumbnail_url || item.url} alt="" className="w-full h-full object-cover" />
             )}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-2">
-              <div className="opacity-0 group-hover:opacity-100 transition flex items-center gap-2">
-                <span className="flex items-center gap-1 text-white text-xs">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex flex-col items-start justify-end p-2">
+              <div className="opacity-0 group-hover:opacity-100 transition">
+                {item.tags?.slice(0, 2).map(tag => (
+                  <span key={tag} className="text-xs bg-black/50 text-white px-1.5 py-0.5 rounded mr-1">
+                    {tag}
+                  </span>
+                ))}
+                <span className="flex items-center gap-1 text-white text-xs mt-1">
                   <Heart size={11} /> {String(item.like_count || 0)}
                 </span>
               </div>
@@ -151,15 +156,15 @@ export default function MediaGrid({ media, onMediaDeleted }) {
               <p className="text-xs text-gray-500 mt-0.5">
                 {new Date(selected.created_at).toLocaleDateString()}
               </p>
-              {selected.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {selected.tags.map(tag => (
-                    <span key={tag} className="text-xs bg-[#1e1e1e] text-gray-400 px-2 py-0.5 rounded">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+                {selected.tags?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {selected.tags.map(tag => (
+                      <span key={tag} className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/20">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
             </div>
 
             {/* Actions */}

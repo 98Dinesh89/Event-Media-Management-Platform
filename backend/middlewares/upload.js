@@ -9,6 +9,8 @@ const storage = new CloudinaryStorage({
       folder: `event-platform/${req.body.event_id || 'general'}`,
       allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov'],
       resource_type: 'auto',
+      categorization: 'google_tagging',
+      auto_tagging: 0.5
     }
   }
 })
