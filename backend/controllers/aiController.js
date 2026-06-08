@@ -1,6 +1,7 @@
 const pool = require('../config/db')
 const cloudinary = require('../config/cloudinary')
 const axios = require('axios')
+const FormData = require('form-data')
 
 const LUXAND_API = 'https://api.luxand.cloud'
 const LUXAND_TOKEN = process.env.LUXAND_API_KEY
@@ -16,32 +17,12 @@ const searchMedia = async (req, res) => {
       WHERE m.is_public = true
     `
     const params = []
-
-    if (q) {
-      params.push(`%${q}%`)
-      query += ` AND (e.title ILIKE $${params.length} OR m.caption ILIKE $${params.length})`
-    }
-    if (event_id) {
-      params.push(event_id)
-      query += ` AND m.event_id = $${params.length}`
-    }
-    if (tag) {
-      params.push(tag)
-      query += ` AND $${params.length} = ANY(m.tags)`
-    }
-    if (from_date) {
-      params.push(from_date)
-      query += ` AND m.created_at >= $${params.length}`
-    }
-    if (to_date) {
-      params.push(to_date)
-      query += ` AND m.created_at <= $${params.length}`
-    }
-    if (uploader) {
-      params.push(`%${uploader}%`)
-      query += ` AND u.name ILIKE $${params.length}`
-    }
-
+    if (q) { params.push(`%${q}%`); query += ` AND (e.title ILIKE $${params.length} OR m.caption ILIKE $${params.length})` }
+    if (event_id) { params.push(event_id); query += ` AND m.event_id = $${params.length}` }
+    if (tag) { params.push(tag); query += ` AND $${params.length} = ANY(m.tags)` }
+    if (from_date) { params.push(from_date); query += ` AND m.created_at >= $${params.length}` }
+    if (to_date) { params.push(to_date); query += ` AND m.created_at <= $${params.length}` }
+    if (uploader) { params.push(`%${uploader}%`); query += ` AND u.name ILIKE $${params.length}` }
     query += ' ORDER BY m.created_at DESC LIMIT 50'
     const result = await pool.query(query, params)
     res.json(result.rows)
@@ -53,71 +34,42 @@ const searchMedia = async (req, res) => {
 const uploadSelfie = async (req, res) => {
   try {
     const selfieUrl = req.file.path
-
-    // Enroll face in Luxand
-    const formData = new (require('form-data'))()
-    const imageResponse = await axios.get(selfieUrl, { responseType: 'arraybuffer' })
-    formData.append('photo', Buffer.from(imageResponse.data), {
-      filename: 'selfie.jpg',
-      contentType: 'image/jpeg'
-    })
-    formData.append('name', req.user.id)
-    formData.append('store', '1')
-
-    const luxandResponse = await axios.post(
-      `${LUXAND_API}/v2/person`,
-      formData,
-      {
-        headers: {
-          ...formData.getHeaders(),
-          'token': LUXAND_TOKEN
-        }
-      }
-    )
-
-    const luxandPersonId = luxandResponse.data?.uuid || null
-    console.log('Luxand person enrolled:', luxandPersonId)
-
-    // Save selfie URL and luxand person ID
-    await pool.query(
-      'UPDATE users SET selfie_url=$1, selfie_public_id=$2 WHERE id=$3',
-      [selfieUrl, luxandPersonId, req.user.id]
-    )
-
-    res.json({ selfie_url: selfieUrl, luxand_id: luxandPersonId })
+    await pool.query('UPDATE users SET selfie_url=$1 WHERE id=$2', [selfieUrl, req.user.id])
+    res.json({ selfie_url: selfieUrl })
   } catch (err) {
-    console.error('Selfie upload error:', err.response?.data || err.message)
+    console.error('Selfie upload error:', err.message)
     res.status(500).json({ message: err.message })
   }
 }
 
 const findMyPhotos = async (req, res) => {
   try {
-    const userResult = await pool.query(
-      'SELECT selfie_url, selfie_public_id FROM users WHERE id=$1',
-      [req.user.id]
-    )
-    const { selfie_url: selfieUrl, selfie_public_id: luxandPersonId } = userResult.rows[0] || {}
-
+    const userResult = await pool.query('SELECT selfie_url FROM users WHERE id=$1', [req.user.id])
+    const selfieUrl = userResult.rows[0]?.selfie_url
     if (!selfieUrl) return res.status(400).json({ message: 'Please upload a selfie first' })
 
+    const selfieBuffer = Buffer.from(
+      (await axios.get(selfieUrl, { responseType: 'arraybuffer' })).data
+    )
+
     const allMedia = await pool.query(
-      `SELECT * FROM media WHERE media_type = 'image' LIMIT 50`
+      `SELECT * FROM media WHERE media_type = 'image' LIMIT 30`
     )
 
     const matches = []
 
     for (const media of allMedia.rows) {
       try {
-        const imageResponse = await axios.get(media.url, { responseType: 'arraybuffer' })
-        const formData = new (require('form-data'))()
-        formData.append('photo', Buffer.from(imageResponse.data), {
-          filename: 'photo.jpg',
-          contentType: 'image/jpeg'
-        })
+        const photoBuffer = Buffer.from(
+          (await axios.get(media.url, { responseType: 'arraybuffer' })).data
+        )
 
-        const verifyResponse = await axios.post(
-          `${LUXAND_API}/v2/verify/${luxandPersonId}`,
+        const formData = new FormData()
+        formData.append('photo1', selfieBuffer, { filename: 'selfie.jpg', contentType: 'image/jpeg' })
+        formData.append('photo2', photoBuffer, { filename: 'photo.jpg', contentType: 'image/jpeg' })
+
+        const response = await axios.post(
+          `${LUXAND_API}/photo/verify`,
           formData,
           {
             headers: {
@@ -127,19 +79,18 @@ const findMyPhotos = async (req, res) => {
           }
         )
 
-        console.log('Verify response:', verifyResponse.data)
+        console.log(`Media ${media.id} verify result:`, response.data)
 
-        if (verifyResponse.data?.status === 'success' &&
-            verifyResponse.data?.probability > 0.7) {
+        if (response.data?.status === 'success' && response.data?.probability > 0.7) {
           matches.push(media)
           await pool.query(
             `INSERT INTO face_matches (user_id, media_id, confidence)
              VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
-            [req.user.id, media.id, verifyResponse.data.probability]
+            [req.user.id, media.id, response.data.probability]
           )
         }
       } catch (e) {
-        console.error('Face verify error for media:', media.id, e.response?.data || e.message)
+        console.error('Verify error:', e.response?.data || e.message)
         continue
       }
     }
