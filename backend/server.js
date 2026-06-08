@@ -15,7 +15,20 @@ const io = new Server(server, {
 })
 
 // Middlewares
-app.use(cors({ origin: process.env.CLIENT_URL }))
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true)
+    if (
+      origin.includes('vercel.app') ||
+      origin.includes('localhost')
+    ) {
+      return callback(null, true)
+    }
+    callback(new Error('Not allowed by CORS'))
+  },
+  methods: ['GET', 'POST', 'PUT','DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use(express.json())
 
 // Make io accessible in routes
