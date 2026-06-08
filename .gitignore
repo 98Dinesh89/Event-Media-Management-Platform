@@ -28,4 +28,4 @@ build/
 # Optional
 .vercel
 
-.password.txt
+password.txt
