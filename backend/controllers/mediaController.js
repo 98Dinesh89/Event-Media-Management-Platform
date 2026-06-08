@@ -105,32 +105,58 @@ const deleteMedia = async (req, res) => {
 }
 
 const downloadMedia = async (req, res) => {
-  const sharp = require('sharp')
-  const axios = require('axios')
   try {
-    const result = await pool.query('SELECT m.*, e.title as event_title FROM media m LEFT JOIN events e ON m.event_id = e.id WHERE m.id = $1', [req.params.id])
+    const result = await pool.query(
+      `SELECT m.*, e.title as event_title, u.role as uploader_role
+       FROM media m 
+       LEFT JOIN events e ON m.event_id = e.id
+       LEFT JOIN users u ON m.uploaded_by = u.id
+       WHERE m.id = $1`,
+      [req.params.id]
+    )
     if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' })
 
     const media = result.rows[0]
+    const axios = require('axios')
+    const sharp = require('sharp')
+
     const response = await axios.get(media.url, { responseType: 'arraybuffer' })
     const imageBuffer = Buffer.from(response.data)
 
+    const imageInfo = await sharp(imageBuffer).metadata()
+    const width = imageInfo.width || 800
+
+    const watermarkText = `${media.event_title || 'MediaVault'} | mediavault.app`
+    const fontSize = Math.max(16, Math.floor(width / 40))
+    const padding = 10
+
+    const svgWatermark = Buffer.from(`
+      <svg width="${width}" height="${fontSize + padding * 2}">
+        <rect width="${width}" height="${fontSize + padding * 2}" fill="rgba(0,0,0,0.55)"/>
+        <text 
+          x="${padding}" 
+          y="${fontSize + padding - 2}" 
+          font-size="${fontSize}" 
+          fill="white" 
+          font-family="Arial, sans-serif"
+          font-weight="bold"
+        >${watermarkText}</text>
+      </svg>
+    `)
+
     const watermarkedImage = await sharp(imageBuffer)
       .composite([{
-        input: Buffer.from(`<svg width="400" height="40">
-          <rect width="400" height="40" fill="rgba(0,0,0,0.5)"/>
-          <text x="10" y="28" font-size="18" fill="white" font-family="Arial">
-            ${media.event_title} | Event Platform
-          </text>
-        </svg>`),
+        input: svgWatermark,
         gravity: 'south'
       }])
+      .jpeg({ quality: 90 })
       .toBuffer()
 
-    res.set('Content-Disposition', `attachment; filename="media-${req.params.id}.jpg"`)
+    res.set('Content-Disposition', `attachment; filename="mediavault-${media.event_title || 'photo'}.jpg"`)
     res.set('Content-Type', 'image/jpeg')
     res.send(watermarkedImage)
   } catch (err) {
+    console.error('Download error:', err.message)
     res.status(500).json({ message: err.message })
   }
 }
