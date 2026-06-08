@@ -17,7 +17,8 @@ const uploadMedia = async (req, res) => {
         })
         if (resource.info?.categorization?.google_tagging?.data) {
           tags = resource.info.categorization.google_tagging.data
-            .filter(t => t.confidence > 0.5)
+            .sort((a, b) => b.confidence - a.confidence)
+            .slice(0, 6)
             .map(t => t.tag)
         }
         if (tags.length === 0) {
