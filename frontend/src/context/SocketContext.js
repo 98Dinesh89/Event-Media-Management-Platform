@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      const s = io('http://localhost:5000')
+      const s = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000')
       s.emit('join', user.id)
       setSocket(s)
       return () => s.disconnect()
