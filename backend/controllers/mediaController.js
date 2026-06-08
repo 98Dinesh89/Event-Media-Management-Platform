@@ -12,25 +12,13 @@ const uploadMedia = async (req, res) => {
       let tags = []
       try {
         const resource = await cloudinary.api.resource(file.filename, {
-          tags: true,
-          categorization: 'google_tagging'
+          faces: true,
+          image_metadata: true
         })
-        if (resource.info?.categorization?.google_tagging?.data) {
-          tags = resource.info.categorization.google_tagging.data
-            .sort((a, b) => b.confidence - a.confidence)
-            .slice(0, 6)
-            .map(t => t.tag)
-        }
-        if (tags.length === 0) {
-          const faceResult = await cloudinary.api.resource(file.filename, {
-            faces: true,
-            image_metadata: true
-          })
-          if (faceResult.faces && faceResult.faces.length > 0) tags.push('people')
-          if (faceResult.image_metadata) {
-            const { PixelXDimension: w, PixelYDimension: h } = faceResult.image_metadata
-            if (w && h) tags.push(w > h ? 'landscape' : 'portrait')
-          }
+        if (resource.faces && resource.faces.length > 0) tags.push('people')
+        if (resource.image_metadata) {
+          const { PixelXDimension: w, PixelYDimension: h } = resource.image_metadata
+          if (w && h) tags.push(w > h ? 'landscape' : 'portrait')
         }
       } catch (e) {
         tags = []
