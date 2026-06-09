@@ -30,7 +30,7 @@ export default function EventsPage() {
     fetchEvents()
   }, [sort, category, selectedClub])
 
-  
+
   const fetchEvents = async () => {
     setLoading(true)
     try {
@@ -50,7 +50,7 @@ export default function EventsPage() {
   const filtered = events.filter(e =>
     e.title.toLowerCase().includes(search.toLowerCase())
   )
-  const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role))
+  const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role)) ?? false
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
