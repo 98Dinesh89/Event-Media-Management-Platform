@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [events, setEvents] = useState([])
   const [recentMedia, setRecentMedia] = useState([])
   const [loading, setLoading] = useState(true)
+  const [mediaCount, setMediaCount] = useState(0)
   const { selectedClub, currentRole } = useClub()
 
   useEffect(() => {
@@ -30,6 +31,10 @@ export default function Dashboard() {
         if (selectedClub) params.append('club_id', selectedClub.id)
         const eventsRes = await api.get(`/events?${params}`)
         setEvents(eventsRes.data.slice(0, 6))
+
+        // Count media uploaded by this user
+        const mediaRes = await api.get(`/media/my-count${selectedClub ? `?club_id=${selectedClub.id}` : ''}`)
+        setMediaCount(mediaRes.data.count)
       } catch (err) {
         console.error(err)
       } finally {
@@ -76,7 +81,7 @@ export default function Dashboard() {
           {[
             { label: 'Total Events', value: String(events.length), icon: Calendar },
             { label: selectedClub ? 'Your Role' : 'Clubs Joined', value: roleSummary, icon: Tag },
-            { label: 'Media Uploaded', value: '0', icon: Image },
+            { label: 'Media Uploaded', value: String(mediaCount), icon: Image },
             ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-4">
               <div className="flex items-center gap-2 mb-3">
