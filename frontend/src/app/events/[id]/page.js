@@ -119,7 +119,7 @@ export default function EventPage() {
       <main className="app-main-wide">
 
         {/* Back */}
-        <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-8 transition">
+        <Link href="/events" className="event-back-link">
           <ArrowLeft size={15} />
           All events
         </Link>
@@ -137,18 +137,18 @@ export default function EventPage() {
                   </span>
                 </div>
                 <h1 className="event-detail-title">{event.title}</h1>
-                {event.club_name && (
-                  <p className="text-[#7C7A74] text-sm">{event.club_name} - {event.user_role}</p>
-                )}
-                {event.description && (
-                  <p className="text-[#B5B1AA] text-sm max-w-2xl leading-relaxed">{event.description}</p>
-                )}
-                {event.event_date && (
-                  <p className="flex items-center gap-2 text-sm text-[#7C7A74]">
-                    <Calendar size={12} />
-                    {new Date(event.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                  </p>
-                )}
+                <div className="event-meta-line">
+                  {event.club_name && <span>{event.club_name} - {event.user_role}</span>}
+                  {event.event_date && (
+                    <span>
+                      <Calendar size={13} />
+                      {new Date(event.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[#B5B1AA] text-sm max-w-2xl leading-relaxed">
+                  {event.description || 'No description provided for this event.'}
+                </p>
               </div>
               <div className="event-detail-actions">
                 {canUpload && (
@@ -280,28 +280,30 @@ export default function EventPage() {
             )}
 
             {/* Media grid */}
-            <div className="media-section-header">
-              <div>
-                <h2 className="section-title">Media</h2>
-                <p className="text-sm text-[#7C7A74] mt-1">{media.length} files in this event</p>
+            <section className="media-album-panel">
+              <div className="media-section-header">
+                <div>
+                  <h2 className="section-title">Media</h2>
+                  <p className="text-sm text-[#7C7A74] mt-1">{media.length} files in this event</p>
+                </div>
               </div>
-            </div>
 
-            {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
-                ))}
-              </div>
-            ) : (
-              <MediaGrid media={media} onMediaDeleted={() => fetchMedia(1)} eventRole={event?.user_role} />
-            )}
+              {loading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <MediaGrid media={media} onMediaDeleted={() => fetchMedia(1)} eventRole={event?.user_role} />
+              )}
 
-            {hasMore && media.length > 0 && (
-              <div ref={ref} className="h-12 flex items-center justify-center mt-6">
-                {loading && <p className="text-[#7C7A74] text-xs">Loading more...</p>}
-              </div>
-            )}
+              {hasMore && media.length > 0 && (
+                <div ref={ref} className="h-12 flex items-center justify-center mt-6">
+                  {loading && <p className="text-[#7C7A74] text-xs">Loading more...</p>}
+                </div>
+              )}
+            </section>
           </>
         )}
       </main>
