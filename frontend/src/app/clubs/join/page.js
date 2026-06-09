@@ -57,33 +57,33 @@ export default function JoinClubPage() {
   return (
     <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-lg mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <Link href="/dashboard" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-6 transition">
+      <main className="max-w-lg mx-auto px-5 sm:px-8 py-8 sm:py-10">
+        <Link href="/dashboard" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-8 transition">
           <ArrowLeft size={15} />
           Back to dashboard
         </Link>
 
-        <h1 className="text-lg font-semibold text-[#F0EDE8] mb-6">Join or create a club</h1>
+        <h1 className="text-xl font-semibold text-[#F0EDE8] mb-7">Join or create a club</h1>
 
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
         {/* Mode toggle */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-3 mb-7">
           <button
             onClick={() => setMode('join')}
-            className={`flex-1 py-2.5 rounded-md text-sm font-medium transition border ${mode === 'join' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
+            className={`flex-1 py-3 rounded-md text-sm font-medium transition border ${mode === 'join' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
           >
             Join existing club
           </button>
           <button
             onClick={() => setMode('create')}
-            className={`flex-1 py-2.5 rounded-md text-sm font-medium transition border ${mode === 'create' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
+            className={`flex-1 py-3 rounded-md text-sm font-medium transition border ${mode === 'create' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
           >
             Create new club
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 bg-[#171717] border border-[#2A2622] rounded-md p-5">
+        <form onSubmit={handleSubmit} className="space-y-5 bg-[#171717] border border-[#2A2622] rounded-md p-6">
           {mode === 'join' ? (
             <>
               <div>
@@ -150,7 +150,7 @@ export default function JoinClubPage() {
           <button
             type="submit"
             disabled={loading || (mode === 'join' && clubs.length === 0)}
-            className="w-full bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] py-2.5 rounded-md text-sm font-semibold transition mt-2"
+            className="w-full bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] py-3 rounded-md text-sm font-semibold transition mt-2"
           >
             {loading ? 'Processing...' : mode === 'join' ? 'Join club' : 'Create club'}
           </button>

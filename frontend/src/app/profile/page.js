@@ -99,26 +99,26 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
 
         {/* Profile header */}
-        <div className="bg-[#171717] border border-[#2A2622] rounded-md p-5 mb-8 flex flex-col sm:flex-row items-start gap-5">
-          <div className="w-16 h-16 rounded-full bg-[#F59E0B] flex items-center justify-center shrink-0">
-            <span className="text-2xl text-[#111111] font-semibold">{user?.name?.[0]?.toUpperCase()}</span>
+        <div className="bg-[#171717] border border-[#2A2622] rounded-md p-6 sm:p-7 mb-10 flex flex-col sm:flex-row items-start gap-6">
+          <div className="w-20 h-20 rounded-full bg-[#F59E0B] flex items-center justify-center shrink-0">
+            <span className="text-3xl text-[#111111] font-semibold">{user?.name?.[0]?.toUpperCase()}</span>
           </div>
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold text-[#F0EDE8]">{user?.name || ''}</h1>
-            <p className="text-[#7C7A74] text-sm">{user?.email || ''}</p>
+          <div className="flex-1 pt-1">
+            <h1 className="text-xl font-semibold text-[#F0EDE8]">{user?.name || ''}</h1>
+            <p className="text-[#7C7A74] text-sm mt-1">{user?.email || ''}</p>
             {selectedClub && currentRole && (
-              <span className="inline-block mt-2 text-xs bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20 px-2 py-0.5 rounded">
+              <span className="inline-block mt-3 text-xs bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20 px-2.5 py-1 rounded">
                 {currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}
               </span>
             )}
           </div>
 
           {/* Selfie section */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="group relative w-16 h-16 rounded-full bg-[#1A1A1A] border border-[#2A2622] overflow-hidden flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3.5 p-1">
+            <div className="group relative w-20 h-20 rounded-full bg-[#1A1A1A] border border-[#2A2622] overflow-hidden flex items-center justify-center">
               {selfieUrl ? (
                 <img src={selfieUrl} alt="selfie" className="w-full h-full object-cover" />
               ) : (
@@ -132,7 +132,7 @@ export default function ProfilePage() {
             <button
               onClick={() => fileRef.current.click()}
               disabled={uploadingSelfie}
-              className="text-xs bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] px-3 py-1.5 rounded-md transition flex items-center gap-1.5"
+              className="text-xs bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] px-4 py-2 rounded-md transition flex items-center gap-2"
             >
               {uploadingSelfie ? <Loader size={11} className="animate-spin" /> : <Upload size={11} />}
               {selfieUrl ? 'Update selfie' : 'Upload selfie'}
@@ -140,7 +140,7 @@ export default function ProfilePage() {
             <button
               onClick={handleFindMe}
               disabled={findingPhotos || !selfieUrl}
-              className="text-xs bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] font-semibold px-3 py-1.5 rounded-md transition flex items-center gap-1.5"
+              className="text-xs bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] font-semibold px-4 py-2 rounded-md transition flex items-center gap-2"
             >
               {findingPhotos ? <Loader size={11} className="animate-spin" /> : <User size={11} />}
               {findingPhotos ? 'Searching...' : 'Find my photos'}
@@ -149,12 +149,12 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 border-b border-[#2A2622]">
+        <div className="flex gap-2 mb-8 border-b border-[#2A2622]">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm transition flex items-center gap-2 border-b-2 -mb-px ${
+              className={`px-5 py-3 text-sm transition flex items-center gap-2 border-b-2 -mb-px ${
                 activeTab === tab.id
                   ? 'text-[#F0EDE8] border-[#F59E0B]'
                   : 'text-[#7C7A74] border-transparent hover:text-[#B5B1AA]'
@@ -170,7 +170,7 @@ export default function ProfilePage() {
         {activeTab === 'face' && (
           <div>
             {faceMatches.length === 0 ? (
-              <div className="border border-dashed border-[#2A2622] rounded-md p-14 text-center bg-[#171717]">
+              <div className="border border-dashed border-[#2A2622] rounded-md p-16 sm:p-20 text-center bg-[#171717]">
                 <svg className="mx-auto mb-4 h-20 w-20 text-[#2A2622]" viewBox="0 0 80 80" fill="none" aria-hidden="true">
                   <rect x="12" y="18" width="56" height="44" rx="4" stroke="currentColor" strokeWidth="2" />
                   <circle cx="40" cy="38" r="10" stroke="currentColor" strokeWidth="2" />
@@ -188,7 +188,7 @@ export default function ProfilePage() {
         {activeTab === 'favourites' && (
           <div>
             {favourites.length === 0 ? (
-              <div className="border border-dashed border-[#2A2622] rounded-md p-16 text-center bg-[#171717]">
+              <div className="border border-dashed border-[#2A2622] rounded-md p-16 sm:p-20 text-center bg-[#171717]">
                 <p className="text-[#B5B1AA] text-sm">No favourites yet</p>
                 <p className="text-[#7C7A74] text-xs mt-1">Bookmark photos to see them here</p>
               </div>

@@ -51,17 +51,17 @@ export default function CreateEventPage() {
   return (
     <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-6 transition">
+      <main className="max-w-2xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
+        <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-8 transition">
           <ArrowLeft size={15} />
           Back to events
         </Link>
 
-        <h1 className="text-lg font-semibold text-[#F0EDE8] mb-6">Create new event</h1>
+        <h1 className="text-xl font-semibold text-[#F0EDE8] mb-7">Create new event</h1>
 
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-5 bg-[#171717] border border-[#2A2622] rounded-md p-5">
+        <form onSubmit={handleSubmit} className="space-y-5 bg-[#171717] border border-[#2A2622] rounded-md p-6">
           <div>
             <label className="text-xs text-[#7C7A74] mb-1.5 block">Club</label>
             <select
@@ -135,7 +135,7 @@ export default function CreateEventPage() {
                   key={String(opt.value)}
                   type="button"
                   onClick={() => setForm({...form, is_public: opt.value})}
-                  className={`flex-1 p-3 rounded-md border text-left transition ${
+                  className={`flex-1 p-4 rounded-md border text-left transition ${
                     form.is_public === opt.value
                       ? 'border-[#F59E0B] bg-[#F59E0B]/10'
                       : 'border-[#2A2622] bg-[#111111] hover:border-[#F59E0B]/60'
@@ -148,7 +148,7 @@ export default function CreateEventPage() {
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-3">
             <Link
               href="/events"
               className="flex-1 text-center py-2.5 rounded-md border border-[#2A2622] text-sm text-[#B5B1AA] hover:text-[#F0EDE8] hover:border-[#F59E0B]/60 transition"

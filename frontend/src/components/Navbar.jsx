@@ -67,8 +67,8 @@ export default function Navbar() {
   const displayRole = selectedClub ? currentRole : null
 
   return (
-    <nav className="min-h-14 border-b border-[#2A2622] bg-[#111111] flex flex-wrap items-center px-4 sm:px-6 gap-3 sticky top-0 z-50">
-      <Link href="/dashboard" className="text-[#F0EDE8] font-semibold text-sm tracking-tight flex items-center gap-2 mr-1">
+    <nav className="min-h-16 border-b border-[#2A2622] bg-[#111111] flex flex-wrap items-center px-5 sm:px-8 gap-4 lg:gap-6 sticky top-0 z-50">
+      <Link href="/dashboard" className="text-[#F0EDE8] font-semibold text-sm tracking-tight flex items-center gap-2.5 mr-1">
         <Camera size={18} className="text-[#F59E0B]" />
         MediaVault
       </Link>
@@ -78,12 +78,12 @@ export default function Navbar() {
         <div className="relative" ref={clubMenuRef}>
           <button
             onClick={() => setShowClubMenu(!showClubMenu)}
-            className="flex min-w-0 items-center gap-2 bg-[#171717] border border-[#2A2622] hover:border-[#F59E0B] text-sm px-3 py-2 rounded-md transition"
+            className="flex min-w-0 items-center gap-2.5 bg-[#171717] border border-[#2A2622] hover:border-[#F59E0B] text-sm px-4 py-2.5 rounded-md transition shadow-sm"
           >
-            <Users size={14} className="text-[#F59E0B] shrink-0" />
-            <span className="text-[#F0EDE8] max-w-36 sm:max-w-56 truncate font-medium">{displayClubName}</span>
+            <Users size={15} className="text-[#F59E0B] shrink-0" />
+            <span className="text-[#F0EDE8] max-w-40 sm:max-w-60 truncate font-medium">{displayClubName}</span>
             {displayRole && (
-              <span className="text-xs text-[#F59E0B] bg-[#F59E0B]/10 border border-[#F59E0B]/20 px-1.5 py-0.5 rounded capitalize">
+              <span className="text-xs text-[#F59E0B] bg-[#F59E0B]/10 border border-[#F59E0B]/20 px-2 py-0.5 rounded capitalize">
                 {displayRole}
               </span>
             )}
@@ -91,11 +91,11 @@ export default function Navbar() {
           </button>
 
           {showClubMenu && (
-            <div className="absolute left-0 top-11 w-72 bg-[#171717] border border-[#2A2622] rounded-lg shadow-2xl z-50 overflow-hidden">
+            <div className="absolute left-0 top-12 w-76 bg-[#171717] border border-[#2A2622] rounded-lg shadow-2xl z-50 overflow-hidden">
               {/* All clubs option */}
               <button
                 onClick={() => { selectClub(null); setShowClubMenu(false) }}
-                className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1A1A1A] ${!selectedClub ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition hover:bg-[#1A1A1A] ${!selectedClub ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
               >
                 <Users size={14} />
                 All Clubs
@@ -109,7 +109,7 @@ export default function Navbar() {
                 <button
                   key={club.id}
                   onClick={() => { selectClub(club); setShowClubMenu(false) }}
-                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1A1A1A] ${selectedClub?.id === club.id ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition hover:bg-[#1A1A1A] ${selectedClub?.id === club.id ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
                 >
                   <div className="w-6 h-6 rounded bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
                     <span className="text-xs text-[#F0EDE8]">{club.name[0].toUpperCase()}</span>
@@ -128,7 +128,7 @@ export default function Navbar() {
               <Link
                 href="/clubs/join"
                 onClick={() => setShowClubMenu(false)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] transition"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] transition"
               >
                 <Plus size={14} />
                 Join or create club
@@ -139,31 +139,31 @@ export default function Navbar() {
       )}
 
       {/* Nav links */}
-      <div className="hidden md:flex items-center gap-1">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
+      <div className="hidden md:flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-3 py-2 rounded-md hover:bg-[#1A1A1A] transition">
           <Home size={15} />
           Home
         </Link>
-        <Link href="/events" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
+        <Link href="/events" className="flex items-center gap-2 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-3 py-2 rounded-md hover:bg-[#1A1A1A] transition">
           <Calendar size={15} />
           Events
         </Link>
-        <Link href="/search" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
+        <Link href="/search" className="flex items-center gap-2 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-3 py-2 rounded-md hover:bg-[#1A1A1A] transition">
           <Search size={15} />
           Search
         </Link>
-        <Link href="/analytics" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
+        <Link href="/analytics" className="flex items-center gap-2 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-3 py-2 rounded-md hover:bg-[#1A1A1A] transition">
             <BarChart2 size={15} />
             Analytics
         </Link>
       </div>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-3">
         {/* Notifications */}
         <div className="relative">
           <button
             onClick={toggleNotifs}
-          className="relative p-2 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
+          className="relative p-2.5 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
           >
             <Bell size={17} />
             {unread > 0 && (
@@ -195,8 +195,8 @@ export default function Navbar() {
         </div>
 
         {/* Profile */}
-        <Link href="/profile" className="flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
-          <div className="w-6 h-6 rounded-full bg-[#F59E0B] flex items-center justify-center">
+        <Link href="/profile" className="flex items-center gap-2.5 px-3 sm:px-4 py-2 rounded-md hover:bg-[#1A1A1A] transition">
+          <div className="w-7 h-7 rounded-full bg-[#F59E0B] flex items-center justify-center">
             <span className="text-xs text-[#111111] font-semibold">{user?.name?.[0]?.toUpperCase()}</span>
           </div>
           <span className="hidden sm:inline text-sm text-[#B5B1AA]">{user?.name}</span>
@@ -204,7 +204,7 @@ export default function Navbar() {
 
         <button
           onClick={handleLogout}
-          className="p-2 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
+          className="p-2.5 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
         >
           <LogOut size={16} />
         </button>

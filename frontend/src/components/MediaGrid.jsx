@@ -121,7 +121,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
   if (media.length === 0) {
     return (
-      <div className="border border-dashed border-[#2A2622] rounded-md p-16 text-center bg-[#171717]">
+      <div className="border border-dashed border-[#2A2622] rounded-md p-16 sm:p-20 text-center bg-[#171717]">
         <p className="text-[#7C7A74] text-sm">No media here yet</p>
       </div>
     )
@@ -129,7 +129,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-1.5 sm:gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {media.map(item => (
           <div
             key={item.id}
@@ -141,14 +141,14 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             ) : (
               <img src={item.thumbnail_url || item.url} alt="" className="w-full h-full object-cover" />
             )}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition flex flex-col items-start justify-end p-2">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition flex flex-col items-start justify-end p-3">
               <div className="opacity-0 group-hover:opacity-100 transition">
                 {item.tags?.slice(0, 2).map(tag => (
-                  <span key={tag} className="text-xs bg-[#111111]/80 text-[#F0EDE8] border border-[#2A2622] px-1.5 py-0.5 rounded mr-1">
+                  <span key={tag} className="text-xs bg-[#111111]/80 text-[#F0EDE8] border border-[#2A2622] px-2 py-1 rounded mr-1.5">
                     {tag}
                   </span>
                 ))}
-                <span className="flex items-center gap-1 text-[#F0EDE8] text-xs mt-1">
+                <span className="flex items-center gap-1.5 text-[#F0EDE8] text-xs mt-2">
                   <Heart size={11} /> {String(item.like_count || 0)}
                 </span>
               </div>
@@ -160,10 +160,10 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
       {/* Lightbox */}
       {selected && (
         <div className="fixed inset-0 bg-[#050505] z-50 flex flex-col lg:flex-row">
-          <div className="flex-1 flex items-center justify-center p-4 lg:p-8 relative min-h-0">
+          <div className="flex-1 flex items-center justify-center p-5 sm:p-6 lg:p-10 relative min-h-0">
             <button
               onClick={() => { setSelected(null); setComments([]) }}
-              className="absolute top-4 left-4 text-[#B5B1AA] hover:text-[#F0EDE8] transition bg-[#111111]/80 border border-[#2A2622] rounded-md p-2"
+              className="absolute top-5 left-5 text-[#B5B1AA] hover:text-[#F0EDE8] transition bg-[#111111]/80 border border-[#2A2622] rounded-md p-2.5"
             >
               <X size={18} />
             </button>
@@ -174,18 +174,18 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             )}
           </div>
 
-          <aside className="w-full lg:w-84 xl:w-96 bg-[#111111] border-t lg:border-t-0 lg:border-l border-[#2A2622] flex flex-col max-h-[45vh] lg:max-h-none">
+          <aside className="w-full lg:w-88 xl:w-[26rem] bg-[#111111] border-t lg:border-t-0 lg:border-l border-[#2A2622] flex flex-col max-h-[48vh] lg:max-h-none">
             {/* Info */}
-            <div className="p-4 border-b border-[#2A2622]">
-              <p className="text-xs text-[#7C7A74] mb-1">Uploaded by</p>
+            <div className="p-5 border-b border-[#2A2622]">
+              <p className="text-xs text-[#7C7A74] mb-1.5">Uploaded by</p>
               <p className="text-sm text-[#F0EDE8] font-medium">{selected.uploader_name}</p>
-              <p className="text-xs text-[#7C7A74] mt-0.5">
+              <p className="text-xs text-[#7C7A74] mt-1">
                 {new Date(selected.created_at).toLocaleDateString()}
               </p>
                 {selected.tags?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-3">
                     {selected.tags.map(tag => (
-                      <span key={tag} className="text-xs bg-[#1A1A1A] text-[#F59E0B] px-2 py-0.5 rounded border border-[#2A2622]">
+                      <span key={tag} className="text-xs bg-[#1A1A1A] text-[#F59E0B] px-2.5 py-1 rounded border border-[#2A2622]">
                         {tag}
                       </span>
                     ))}
@@ -194,10 +194,10 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Actions */}
-            <div className="p-4 border-b border-[#2A2622] flex items-center gap-2 relative">
+            <div className="p-5 border-b border-[#2A2622] flex items-center gap-3 relative">
               <button
                 onClick={() => handleLike(selected.id)}
-                className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md transition active:scale-95 ${
+                className={`flex items-center gap-2 text-sm px-4 py-2.5 rounded-md transition active:scale-95 ${
                   likes[selected.id]
                     ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30'
                     : 'bg-[#171717] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'
@@ -209,7 +209,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleFavourite(selected.id)}
-                className={`p-1.5 rounded-md transition border border-transparent ${
+                className={`p-2.5 rounded-md transition border border-transparent bg-[#171717] ${
                   favourites[selected.id] ? 'text-[#F59E0B]' : 'text-[#7C7A74] hover:text-[#F0EDE8]'
                 }`}
               >
@@ -218,25 +218,25 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => setShowTagSearch(!showTagSearch)}
-                className="p-1.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] transition"
+                className="p-2.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] bg-[#171717] transition"
               >
                 <UserPlus size={16} />
               </button>
 
               {showTagSearch && (
-                <div className="absolute top-12 left-0 w-full bg-[#171717] border border-[#2A2622] rounded-md p-2 z-10">
+                <div className="absolute top-16 left-0 w-full bg-[#171717] border border-[#2A2622] rounded-md p-3 z-10">
                   <input
                     type="text"
                     value={tagSearch}
                     onChange={e => { setTagSearch(e.target.value); searchUsersForTag(e.target.value) }}
                     placeholder="Search users to tag..."
-                    className="w-full bg-[#111111] border border-[#2A2622] rounded px-2 py-1.5 text-xs text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B] mb-2"
+                    className="w-full bg-[#111111] border border-[#2A2622] rounded px-3 py-2 text-xs text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B] mb-2"
                   />
                   {tagResults.map(u => (
                     <div
                       key={u.id}
                       onClick={() => handleTagUser(u.id)}
-                      className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#1A1A1A] rounded cursor-pointer"
+                      className="flex items-center gap-2.5 px-2 py-2 hover:bg-[#1A1A1A] rounded cursor-pointer"
                     >
                       <div className="w-5 h-5 rounded-full bg-[#F59E0B] flex items-center justify-center">
                         <span className="text-xs text-[#111111] font-semibold">{u.name[0].toUpperCase()}</span>
@@ -250,7 +250,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleDownload(selected.id)}
-                className="p-1.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] transition"
+                className="p-2.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] bg-[#171717] transition"
               >
                 <Download size={16} />
               </button>
@@ -258,7 +258,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
               {(user?.id === selected.uploaded_by || eventRole === 'admin' || selected.user_role === 'admin') && (
                 <button
                   onClick={() => handleDelete(selected.id)}
-                  className="p-1.5 rounded-md text-[#7C7A74] hover:text-red-400 transition ml-auto"
+                  className="p-2.5 rounded-md text-[#7C7A74] hover:text-red-400 bg-[#171717] transition ml-auto"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -266,15 +266,15 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Comments */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
               {loadingComments ? (
                 <p className="text-[#7C7A74] text-xs">Loading comments...</p>
               ) : comments.length === 0 ? (
                 <p className="text-[#7C7A74] text-xs">No comments yet</p>
               ) : (
                 comments.map(c => (
-                  <div key={c.id} className="flex gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
+                  <div key={c.id} className="flex gap-3">
+                    <div className="w-7 h-7 rounded-full bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
                       <span className="text-xs text-[#F59E0B]">{c.name?.[0]?.toUpperCase()}</span>
                     </div>
                     <div>
@@ -292,17 +292,17 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Comment input */}
-            <form onSubmit={handleComment} className="p-4 border-t border-[#2A2622] flex gap-2">
+            <form onSubmit={handleComment} className="p-5 border-t border-[#2A2622] flex gap-3">
               <input
                 type="text"
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
                 placeholder="Add a comment..."
-                className="flex-1 bg-[#171717] border border-[#2A2622] rounded-md px-3 py-2 text-xs text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                className="flex-1 bg-[#171717] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               />
               <button
                 type="submit"
-                className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold px-3 py-2 rounded-md text-xs transition"
+                className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold px-4 py-2.5 rounded-md text-sm transition"
               >
                 Post
               </button>
