@@ -43,6 +43,10 @@ export default function Dashboard() {
     ? (currentRole ? currentRole.charAt(0).toUpperCase() + currentRole.slice(1) : 'Viewer')
     : (user?.clubs?.length ? `${user.clubs.length} Club${user.clubs.length > 1 ? 's' : ''}` : 'Viewer')
 
+  console.log('selectedClub:', selectedClub)
+  console.log('currentRole:', currentRole)
+  console.log('user clubs:', user?.clubs)
+
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
       <Navbar />

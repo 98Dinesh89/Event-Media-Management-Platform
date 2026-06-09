@@ -6,6 +6,7 @@ import api from '@/lib/api'
 import { User, Upload, Camera, Loader } from 'lucide-react'
 import MediaGrid from '@/components/MediaGrid'
 import { useRouter } from 'next/navigation'
+import { useClub } from '@/context/ClubContext'
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -17,6 +18,7 @@ export default function ProfilePage() {
   const [findingPhotos, setFindingPhotos] = useState(false)
   const [activeTab, setActiveTab] = useState('face')
   const fileRef = useRef()
+  const { selectedClub, currentRole } = useClub()
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -107,9 +109,11 @@ export default function ProfilePage() {
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-white">{user?.name || ''}</h1>
             <p className="text-gray-500 text-sm">{user?.email || ''}</p>
-            <span className="inline-block mt-2 text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">
-              {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ''}
-            </span>
+            {selectedClub && currentRole && (
+              <span className="inline-block mt-2 text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">
+                {currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}
+              </span>
+            )}
           </div>
 
           {/* Selfie section */}
