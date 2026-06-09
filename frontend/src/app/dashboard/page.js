@@ -39,10 +39,9 @@ export default function Dashboard() {
     fetchData()
   }, [selectedClub])
 
-  const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role))
-  const roleSummary = user?.clubs?.length
-    ? `${user.clubs.length} club${user.clubs.length === 1 ? '' : 's'}`
-    : 'Viewer'
+  const roleSummary = selectedClub
+    ? (currentRole ? currentRole.charAt(0).toUpperCase() + currentRole.slice(1) : 'Viewer')
+    : (user?.clubs?.length ? `${user.clubs.length} Club${user.clubs.length > 1 ? 's' : ''}` : 'Viewer')
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
@@ -74,7 +73,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             { label: 'Total Events', value: String(events.length), icon: Calendar },
-            { label: 'Your Role', value: roleSummary, icon: Tag },
+            { label: selectedClub ? 'Your Role' : 'Clubs Joined', value: roleSummary, icon: Tag },
             { label: 'Media Uploaded', value: '0', icon: Image },
             ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-4">
