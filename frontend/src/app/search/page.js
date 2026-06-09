@@ -59,60 +59,60 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-6 py-8">
-        <h1 className="text-lg font-semibold text-white mb-6">Search media</h1>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 className="text-lg font-semibold text-[#F0EDE8] mb-6">Search media</h1>
 
-        <form onSubmit={handleSearch} className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-5 mb-8">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <form onSubmit={handleSearch} className="bg-[#171717] border border-[#2A2622] rounded-md p-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             <div>
-              <label className="text-xs text-gray-500 mb-1.5 block">Event name or caption</label>
+              <label className="text-xs text-[#7C7A74] mb-1.5 block">Event name or caption</label>
               <input
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="e.g. Annual fest"
-                className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1.5 block">Tag</label>
+              <label className="text-xs text-[#7C7A74] mb-1.5 block">Tag</label>
               <input
                 type="text"
                 value={tag}
                 onChange={e => setTag(e.target.value)}
                 placeholder="e.g. mountains, crowd"
-                className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1.5 block">Uploader name</label>
+              <label className="text-xs text-[#7C7A74] mb-1.5 block">Uploader name</label>
               <input
                 type="text"
                 value={uploader}
                 onChange={e => setUploader(e.target.value)}
                 placeholder="e.g. Dinesh"
-                className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-xs text-gray-500 mb-1.5 block">From date</label>
+                <label className="text-xs text-[#7C7A74] mb-1.5 block">From date</label>
                 <input
                   type="date"
                   value={fromDate}
                   onChange={e => setFromDate(e.target.value)}
-                  className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1.5 block">To date</label>
+                <label className="text-xs text-[#7C7A74] mb-1.5 block">To date</label>
                 <input
                   type="date"
                   value={toDate}
                   onChange={e => setToDate(e.target.value)}
-                  className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
                 />
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function SearchPage() {
           <div className="flex gap-3">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm px-5 py-2 rounded-lg transition"
+              className="flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold text-sm px-5 py-2 rounded-md transition"
             >
               <Search size={14} />
               Search
@@ -130,7 +130,7 @@ export default function SearchPage() {
               <button
                 type="button"
                 onClick={clearAll}
-                className="flex items-center gap-2 bg-[#1e1e1e] hover:bg-[#2a2a2a] text-gray-400 text-sm px-4 py-2 rounded-lg transition"
+                className="flex items-center gap-2 bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-4 py-2 rounded-md transition"
               >
                 <X size={14} />
                 Clear
@@ -140,16 +140,16 @@ export default function SearchPage() {
         </form>
 
         {loading && (
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square bg-[#141414] rounded-xl animate-pulse" />
+              <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
             ))}
           </div>
         )}
 
         {searched && !loading && (
           <>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-[#7C7A74] mb-4">
               {results.length} result{results.length !== 1 ? 's' : ''} found
             </p>
             <MediaGrid media={results} />

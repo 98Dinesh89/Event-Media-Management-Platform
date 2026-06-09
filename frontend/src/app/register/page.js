@@ -49,49 +49,49 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">
-      <div className="bg-[#1a1a1a] p-8 rounded-2xl w-full max-w-md border border-[#2a2a2a]">
-        <h1 className="text-2xl font-bold text-white mb-2">Create account</h1>
-        <p className="text-gray-400 mb-6">Join the platform</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#111111] text-[#F0EDE8] px-4 py-8">
+      <div className="bg-[#171717] p-6 sm:p-8 rounded-md w-full max-w-md border border-[#2A2622]">
+        <h1 className="text-2xl font-semibold text-[#F0EDE8] mb-2">Create account</h1>
+        <p className="text-[#B5B1AA] text-sm mb-6">Join the platform</p>
 
-        {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 p-3 rounded-lg">{error}</p>}
+        {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Name</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Name</label>
             <input
               type="text"
               value={form.name}
               onChange={e => setForm({...form, name: e.target.value})}
-              className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               placeholder="Your name"
               required
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Email</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Email</label>
             <input
               type="email"
               value={form.email}
               onChange={e => setForm({...form, email: e.target.value})}
-              className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               placeholder="you@example.com"
               required
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Password</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Password</label>
             <input
               type="password"
               value={form.password}
               onChange={e => setForm({...form, password: e.target.value})}
-              className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
-              placeholder="••••••••"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+              placeholder="Password"
               required
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400 mb-2 block">Club setup</label>
+            <label className="text-xs text-[#7C7A74] mb-2 block">Club setup</label>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { value: 'join', label: 'Join clubs' },
@@ -101,10 +101,10 @@ export default function RegisterPage() {
                   key={opt.value}
                   type="button"
                   onClick={() => setForm({ ...form, mode: opt.value })}
-                  className={`py-2 rounded-lg border text-sm transition ${
+                  className={`py-2 rounded-md border text-sm transition ${
                     form.mode === opt.value
-                      ? 'border-purple-500 bg-purple-500/10 text-white'
-                      : 'border-[#3a3a3a] bg-[#2a2a2a] text-gray-400'
+                      ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F0EDE8]'
+                      : 'border-[#2A2622] bg-[#111111] text-[#B5B1AA] hover:text-[#F0EDE8]'
                   }`}
                 >
                   {opt.label}
@@ -116,22 +116,22 @@ export default function RegisterPage() {
           {form.mode === 'create' ? (
             <>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Club name</label>
+                <label className="text-xs text-[#7C7A74] mb-1.5 block">Club name</label>
                 <input
                   type="text"
                   value={form.club_name}
                   onChange={e => setForm({ ...form, club_name: e.target.value })}
-                  className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
                   placeholder="Photography Club"
                   required={form.mode === 'create'}
                 />
               </div>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Club description</label>
+                <label className="text-xs text-[#7C7A74] mb-1.5 block">Club description</label>
                 <textarea
                   value={form.club_description}
                   onChange={e => setForm({ ...form, club_description: e.target.value })}
-                  className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500 resize-none"
+                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B] resize-none"
                   placeholder="What is this club about?"
                   rows={3}
                 />
@@ -139,7 +139,7 @@ export default function RegisterPage() {
             </>
           ) : (
             <div className="space-y-3">
-              <label className="text-sm text-gray-400 block">Join up to 3 clubs</label>
+              <label className="text-xs text-[#7C7A74] block">Join up to 3 clubs</label>
               {form.clubs.map((club, index) => (
                 <div key={index} className="grid grid-cols-[1fr_130px] gap-2">
                   <select
@@ -149,7 +149,7 @@ export default function RegisterPage() {
                       clubs[index] = { ...clubs[index], club_id: e.target.value }
                       setForm({ ...form, clubs })
                     }}
-                    className="bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                    className="bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
                   >
                     <option value="">Select club</option>
                     {availableClubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -161,7 +161,7 @@ export default function RegisterPage() {
                       clubs[index] = { ...clubs[index], role: e.target.value }
                       setForm({ ...form, clubs })
                     }}
-                    className="bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                    className="bg-[#111111] border border-[#2A2622] rounded-md px-3 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
                   >
                     <option value="viewer">Viewer</option>
                     <option value="member">Member</option>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, clubs: [...form.clubs, { club_id: '', role: 'viewer' }] })}
-                  className="text-sm text-purple-400 hover:text-purple-300"
+                  className="text-sm text-[#F59E0B] hover:text-[#D97706]"
                 >
                   Add another club
                 </button>
@@ -183,15 +183,15 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition disabled:opacity-50"
+            className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] py-3 rounded-md font-semibold transition disabled:opacity-50"
           >
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
-        <p className="text-gray-400 text-sm mt-6 text-center">
+        <p className="text-[#B5B1AA] text-sm mt-6 text-center">
           Already have an account?{' '}
-          <Link href="/login" className="text-purple-400 hover:underline">Sign in</Link>
+          <Link href="/login" className="text-[#F59E0B] hover:text-[#D97706]">Sign in</Link>
         </p>
       </div>
     </div>

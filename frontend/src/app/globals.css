@@ -7,8 +7,8 @@
 }
 
 body {
-  background-color: #0f0f0f;
-  color: #ffffff;
+  background-color: #111111;
+  color: #F0EDE8;
   font-family: 'Inter', sans-serif;
 }
 
@@ -16,9 +16,14 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #171717;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #2A2622;
   border-radius: 3px;
+}
+
+::selection {
+  background: #F59E0B;
+  color: #111111;
 }

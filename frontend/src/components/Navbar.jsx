@@ -67,9 +67,9 @@ export default function Navbar() {
   const displayRole = selectedClub ? currentRole : null
 
   return (
-    <nav className="h-14 border-b border-[#1e1e1e] bg-[#0f0f0f] flex items-center px-6 gap-4 sticky top-0 z-50">
-      <Link href="/dashboard" className="text-white font-semibold text-sm tracking-tight flex items-center gap-2 mr-2">
-        <Camera size={18} className="text-purple-400" />
+    <nav className="min-h-14 border-b border-[#2A2622] bg-[#111111] flex flex-wrap items-center px-4 sm:px-6 gap-3 sticky top-0 z-50">
+      <Link href="/dashboard" className="text-[#F0EDE8] font-semibold text-sm tracking-tight flex items-center gap-2 mr-1">
+        <Camera size={18} className="text-[#F59E0B]" />
         MediaVault
       </Link>
 
@@ -78,57 +78,57 @@ export default function Navbar() {
         <div className="relative" ref={clubMenuRef}>
           <button
             onClick={() => setShowClubMenu(!showClubMenu)}
-            className="flex items-center gap-1.5 bg-[#141414] border border-[#2a2a2a] hover:border-[#3a3a3a] text-sm px-3 py-1.5 rounded-lg transition"
+            className="flex min-w-0 items-center gap-2 bg-[#171717] border border-[#2A2622] hover:border-[#F59E0B] text-sm px-3 py-2 rounded-md transition"
           >
-            <Users size={13} className="text-purple-400" />
-            <span className="text-gray-300">{displayClubName}</span>
+            <Users size={14} className="text-[#F59E0B] shrink-0" />
+            <span className="text-[#F0EDE8] max-w-36 sm:max-w-56 truncate font-medium">{displayClubName}</span>
             {displayRole && (
-              <span className="text-xs text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded">
+              <span className="text-xs text-[#F59E0B] bg-[#F59E0B]/10 border border-[#F59E0B]/20 px-1.5 py-0.5 rounded capitalize">
                 {displayRole}
               </span>
             )}
-            <ChevronDown size={13} className="text-gray-500" />
+            <ChevronDown size={13} className="text-[#7C7A74] shrink-0" />
           </button>
 
           {showClubMenu && (
-            <div className="absolute left-0 top-10 w-56 bg-[#141414] border border-[#2a2a2a] rounded-xl shadow-xl z-50 overflow-hidden">
+            <div className="absolute left-0 top-11 w-72 bg-[#171717] border border-[#2A2622] rounded-lg shadow-2xl z-50 overflow-hidden">
               {/* All clubs option */}
               <button
                 onClick={() => { selectClub(null); setShowClubMenu(false) }}
-                className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1e1e1e] ${!selectedClub ? 'text-purple-400' : 'text-gray-300'}`}
+                className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1A1A1A] ${!selectedClub ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
               >
                 <Users size={14} />
                 All Clubs
-                {!selectedClub && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400" />}
+                {!selectedClub && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />}
               </button>
 
-              {clubs.length > 0 && <div className="border-t border-[#2a2a2a]" />}
+              {clubs.length > 0 && <div className="border-t border-[#2A2622]" />}
 
               {/* Individual clubs */}
               {clubs.map(club => (
                 <button
                   key={club.id}
                   onClick={() => { selectClub(club); setShowClubMenu(false) }}
-                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1e1e1e] ${selectedClub?.id === club.id ? 'text-purple-400' : 'text-gray-300'}`}
+                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1A1A1A] ${selectedClub?.id === club.id ? 'text-[#F59E0B]' : 'text-[#B5B1AA]'}`}
                 >
-                  <div className="w-5 h-5 rounded bg-purple-600/30 flex items-center justify-center shrink-0">
-                    <span className="text-xs text-purple-300">{club.name[0].toUpperCase()}</span>
+                  <div className="w-6 h-6 rounded bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
+                    <span className="text-xs text-[#F0EDE8]">{club.name[0].toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="truncate">{club.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{club.role}</p>
+                    <p className="truncate text-[#F0EDE8]">{club.name}</p>
+                    <p className="text-xs text-[#F59E0B] capitalize">{club.role}</p>
                   </div>
-                  {selectedClub?.id === club.id && <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />}
+                  {selectedClub?.id === club.id && <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] shrink-0" />}
                 </button>
               ))}
 
-              <div className="border-t border-[#2a2a2a]" />
+              <div className="border-t border-[#2A2622]" />
 
               {/* Join/Create club */}
               <Link
                 href="/clubs/join"
                 onClick={() => setShowClubMenu(false)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-[#1e1e1e] transition"
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] transition"
               >
                 <Plus size={14} />
                 Join or create club
@@ -139,20 +139,20 @@ export default function Navbar() {
       )}
 
       {/* Nav links */}
-      <div className="flex items-center gap-1">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
+      <div className="hidden md:flex items-center gap-1">
+        <Link href="/dashboard" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
           <Home size={15} />
           Home
         </Link>
-        <Link href="/events" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
+        <Link href="/events" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
           <Calendar size={15} />
           Events
         </Link>
-        <Link href="/search" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
+        <Link href="/search" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
           <Search size={15} />
           Search
         </Link>
-        <Link href="/analytics" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
+        <Link href="/analytics" className="flex items-center gap-1.5 text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-2.5 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
             <BarChart2 size={15} />
             Analytics
         </Link>
@@ -163,29 +163,29 @@ export default function Navbar() {
         <div className="relative">
           <button
             onClick={toggleNotifs}
-            className="relative p-2 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-md transition"
+          className="relative p-2 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
           >
             <Bell size={17} />
             {unread > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#F59E0B] rounded-full" />
             )}
           </button>
 
           {showNotifs && (
-            <div className="absolute right-0 top-10 w-80 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-xl z-50 overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#2a2a2a]">
-                <p className="text-sm font-medium text-white">Notifications</p>
+            <div className="absolute right-0 top-10 w-80 bg-[#171717] border border-[#2A2622] rounded-lg shadow-2xl z-50 overflow-hidden">
+              <div className="px-4 py-3 border-b border-[#2A2622]">
+                <p className="text-sm font-medium text-[#F0EDE8]">Notifications</p>
               </div>
               <div className="max-h-72 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="text-gray-500 text-sm text-center py-6">No notifications</p>
+                  <p className="text-[#7C7A74] text-sm text-center py-6">No notifications</p>
                 ) : (
                   notifications.map(n => (
-                    <div key={n.id} className={`px-4 py-3 border-b border-[#2a2a2a] hover:bg-[#222] transition ${!n.is_read ? 'bg-purple-500/5' : ''}`}>
-                      <p className="text-sm text-gray-300">
-                        <span className="text-white font-medium">{n.from_name}</span> {n.message}
+                    <div key={n.id} className={`px-4 py-3 border-b border-[#2A2622] hover:bg-[#1A1A1A] transition ${!n.is_read ? 'bg-[#F59E0B]/5' : ''}`}>
+                      <p className="text-sm text-[#B5B1AA]">
+                        <span className="text-[#F0EDE8] font-medium">{n.from_name}</span> {n.message}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+                      <p className="text-xs text-[#7C7A74] mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
                     </div>
                   ))
                 )}
@@ -195,16 +195,16 @@ export default function Navbar() {
         </div>
 
         {/* Profile */}
-        <Link href="/profile" className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
-          <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center">
-            <span className="text-xs text-white font-medium">{user?.name?.[0]?.toUpperCase()}</span>
+        <Link href="/profile" className="flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-md hover:bg-[#1A1A1A] transition">
+          <div className="w-6 h-6 rounded-full bg-[#F59E0B] flex items-center justify-center">
+            <span className="text-xs text-[#111111] font-semibold">{user?.name?.[0]?.toUpperCase()}</span>
           </div>
-          <span className="text-sm text-gray-300">{user?.name}</span>
+          <span className="hidden sm:inline text-sm text-[#B5B1AA]">{user?.name}</span>
         </Link>
 
         <button
           onClick={handleLogout}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-md transition"
+          className="p-2 text-[#B5B1AA] hover:text-[#F0EDE8] hover:bg-[#1A1A1A] rounded-md transition"
         >
           <LogOut size={16} />
         </button>

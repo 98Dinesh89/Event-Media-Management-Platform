@@ -121,19 +121,19 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
   if (media.length === 0) {
     return (
-      <div className="border border-dashed border-[#2a2a2a] rounded-xl p-16 text-center">
-        <p className="text-gray-600 text-sm">No media here yet</p>
+      <div className="border border-dashed border-[#2A2622] rounded-md p-16 text-center bg-[#171717]">
+        <p className="text-[#7C7A74] text-sm">No media here yet</p>
       </div>
     )
   }
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-1.5 sm:gap-2">
         {media.map(item => (
           <div
             key={item.id}
-            className="aspect-square bg-[#141414] rounded-lg overflow-hidden cursor-pointer relative group"
+            className="aspect-square bg-[#171717] rounded-[3px] overflow-hidden cursor-pointer relative group border border-transparent hover:border-[#F59E0B] transition"
             onClick={() => openMedia(item)}
           >
             {item.media_type === 'video' ? (
@@ -141,14 +141,14 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             ) : (
               <img src={item.thumbnail_url || item.url} alt="" className="w-full h-full object-cover" />
             )}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex flex-col items-start justify-end p-2">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition flex flex-col items-start justify-end p-2">
               <div className="opacity-0 group-hover:opacity-100 transition">
                 {item.tags?.slice(0, 2).map(tag => (
-                  <span key={tag} className="text-xs bg-black/50 text-white px-1.5 py-0.5 rounded mr-1">
+                  <span key={tag} className="text-xs bg-[#111111]/80 text-[#F0EDE8] border border-[#2A2622] px-1.5 py-0.5 rounded mr-1">
                     {tag}
                   </span>
                 ))}
-                <span className="flex items-center gap-1 text-white text-xs mt-1">
+                <span className="flex items-center gap-1 text-[#F0EDE8] text-xs mt-1">
                   <Heart size={11} /> {String(item.like_count || 0)}
                 </span>
               </div>
@@ -159,32 +159,33 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
       {/* Lightbox */}
       {selected && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex">
-          <div className="flex-1 flex items-center justify-center p-8 relative">
+        <div className="fixed inset-0 bg-[#050505] z-50 flex flex-col lg:flex-row">
+          <div className="flex-1 flex items-center justify-center p-4 lg:p-8 relative min-h-0">
             <button
               onClick={() => { setSelected(null); setComments([]) }}
-              className="absolute top-4 left-4 text-gray-400 hover:text-white transition"
+              className="absolute top-4 left-4 text-[#B5B1AA] hover:text-[#F0EDE8] transition bg-[#111111]/80 border border-[#2A2622] rounded-md p-2"
             >
-              <X size={22} />
+              <X size={18} />
             </button>
             {selected.media_type === 'video' ? (
-              <video src={selected.url} controls className="max-h-full max-w-full rounded-lg" />
+              <video src={selected.url} controls className="max-h-full max-w-full rounded-md" />
             ) : (
-              <img src={selected.url} alt="" className="max-h-full max-w-full object-contain rounded-lg" />
+              <img src={selected.url} alt="" className="max-h-full max-w-full object-contain rounded-md" />
             )}
           </div>
 
-          <div className="w-80 bg-[#0f0f0f] border-l border-[#1e1e1e] flex flex-col">
+          <aside className="w-full lg:w-84 xl:w-96 bg-[#111111] border-t lg:border-t-0 lg:border-l border-[#2A2622] flex flex-col max-h-[45vh] lg:max-h-none">
             {/* Info */}
-            <div className="p-4 border-b border-[#1e1e1e]">
-              <p className="text-sm text-white font-medium">{selected.uploader_name}</p>
-              <p className="text-xs text-gray-500 mt-0.5">
+            <div className="p-4 border-b border-[#2A2622]">
+              <p className="text-xs text-[#7C7A74] mb-1">Uploaded by</p>
+              <p className="text-sm text-[#F0EDE8] font-medium">{selected.uploader_name}</p>
+              <p className="text-xs text-[#7C7A74] mt-0.5">
                 {new Date(selected.created_at).toLocaleDateString()}
               </p>
                 {selected.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {selected.tags.map(tag => (
-                      <span key={tag} className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/20">
+                      <span key={tag} className="text-xs bg-[#1A1A1A] text-[#F59E0B] px-2 py-0.5 rounded border border-[#2A2622]">
                         {tag}
                       </span>
                     ))}
@@ -193,13 +194,13 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Actions */}
-            <div className="p-4 border-b border-[#1e1e1e] flex items-center gap-2 relative">
+            <div className="p-4 border-b border-[#2A2622] flex items-center gap-2 relative">
               <button
                 onClick={() => handleLike(selected.id)}
-                className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition ${
+                className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md transition active:scale-95 ${
                   likes[selected.id]
-                    ? 'bg-red-500/20 text-red-400'
-                    : 'bg-[#1a1a1a] text-gray-400 hover:text-white'
+                    ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30'
+                    : 'bg-[#171717] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'
                 }`}
               >
                 <Heart size={14} fill={likes[selected.id] ? 'currentColor' : 'none'} />
@@ -208,8 +209,8 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleFavourite(selected.id)}
-                className={`p-1.5 rounded-lg transition ${
-                  favourites[selected.id] ? 'text-yellow-400' : 'text-gray-500 hover:text-white'
+                className={`p-1.5 rounded-md transition border border-transparent ${
+                  favourites[selected.id] ? 'text-[#F59E0B]' : 'text-[#7C7A74] hover:text-[#F0EDE8]'
                 }`}
               >
                 <Bookmark size={16} fill={favourites[selected.id] ? 'currentColor' : 'none'} />
@@ -217,31 +218,31 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => setShowTagSearch(!showTagSearch)}
-                className="p-1.5 rounded-lg text-gray-500 hover:text-white transition"
+                className="p-1.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] transition"
               >
                 <UserPlus size={16} />
               </button>
 
               {showTagSearch && (
-                <div className="absolute top-12 left-0 w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-2 z-10">
+                <div className="absolute top-12 left-0 w-full bg-[#171717] border border-[#2A2622] rounded-md p-2 z-10">
                   <input
                     type="text"
                     value={tagSearch}
                     onChange={e => { setTagSearch(e.target.value); searchUsersForTag(e.target.value) }}
                     placeholder="Search users to tag..."
-                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded px-2 py-1.5 text-xs text-white focus:outline-none mb-2"
+                    className="w-full bg-[#111111] border border-[#2A2622] rounded px-2 py-1.5 text-xs text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B] mb-2"
                   />
                   {tagResults.map(u => (
                     <div
                       key={u.id}
                       onClick={() => handleTagUser(u.id)}
-                      className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#2a2a2a] rounded cursor-pointer"
+                      className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#1A1A1A] rounded cursor-pointer"
                     >
-                      <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
-                        <span className="text-xs text-white">{u.name[0].toUpperCase()}</span>
+                      <div className="w-5 h-5 rounded-full bg-[#F59E0B] flex items-center justify-center">
+                        <span className="text-xs text-[#111111] font-semibold">{u.name[0].toUpperCase()}</span>
                       </div>
-                      <span className="text-xs text-white">{u.name}</span>
-                      <span className="text-xs text-gray-500 ml-auto">{u.role}</span>
+                      <span className="text-xs text-[#F0EDE8]">{u.name}</span>
+                      <span className="text-xs text-[#7C7A74] ml-auto">{u.role}</span>
                     </div>
                   ))}
                 </div>
@@ -249,7 +250,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleDownload(selected.id)}
-                className="p-1.5 rounded-lg text-gray-500 hover:text-white transition"
+                className="p-1.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] transition"
               >
                 <Download size={16} />
               </button>
@@ -257,7 +258,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
               {(user?.id === selected.uploaded_by || eventRole === 'admin' || selected.user_role === 'admin') && (
                 <button
                   onClick={() => handleDelete(selected.id)}
-                  className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 transition ml-auto"
+                  className="p-1.5 rounded-md text-[#7C7A74] hover:text-red-400 transition ml-auto"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -267,21 +268,21 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             {/* Comments */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {loadingComments ? (
-                <p className="text-gray-600 text-xs">Loading comments...</p>
+                <p className="text-[#7C7A74] text-xs">Loading comments...</p>
               ) : comments.length === 0 ? (
-                <p className="text-gray-600 text-xs">No comments yet</p>
+                <p className="text-[#7C7A74] text-xs">No comments yet</p>
               ) : (
                 comments.map(c => (
                   <div key={c.id} className="flex gap-2">
-                    <div className="w-6 h-6 rounded-full bg-purple-600/50 flex items-center justify-center shrink-0">
-                      <span className="text-xs text-white">{c.name?.[0]?.toUpperCase()}</span>
+                    <div className="w-6 h-6 rounded-full bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
+                      <span className="text-xs text-[#F59E0B]">{c.name?.[0]?.toUpperCase()}</span>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-300">
-                        <span className="text-white font-medium">{c.name} </span>
+                      <p className="text-xs text-[#B5B1AA]">
+                        <span className="text-[#F0EDE8] font-medium">{c.name} </span>
                         {c.text}
                       </p>
-                      <p className="text-xs text-gray-600 mt-0.5">
+                      <p className="text-xs text-[#7C7A74] mt-0.5">
                         {new Date(c.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -291,22 +292,22 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Comment input */}
-            <form onSubmit={handleComment} className="p-4 border-t border-[#1e1e1e] flex gap-2">
+            <form onSubmit={handleComment} className="p-4 border-t border-[#2A2622] flex gap-2">
               <input
                 type="text"
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
                 placeholder="Add a comment..."
-                className="flex-1 bg-[#141414] border border-[#1e1e1e] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                className="flex-1 bg-[#171717] border border-[#2A2622] rounded-md px-3 py-2 text-xs text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               />
               <button
                 type="submit"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-xs transition"
+                className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold px-3 py-2 rounded-md text-xs transition"
               >
                 Post
               </button>
             </form>
-          </div>
+          </aside>
         </div>
       )}
     </>

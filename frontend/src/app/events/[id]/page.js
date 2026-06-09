@@ -114,12 +114,12 @@ export default function EventPage() {
   const canUpload = event?.user_role === 'admin' || (event?.user_role === 'photographer' && event?.created_by === user?.id)
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Back */}
-        <Link href="/events" className="flex items-center gap-2 text-gray-500 hover:text-white text-sm mb-6 transition">
+        <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-6 transition">
           <ArrowLeft size={15} />
           All events
         </Link>
@@ -127,22 +127,22 @@ export default function EventPage() {
         {event && (
           <>
             {/* Event header */}
-            <div className="flex items-start justify-between mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-8 border-b border-[#2A2622] pb-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs bg-[#1e1e1e] text-gray-500 px-2 py-0.5 rounded">{event.category}</span>
-                  <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded ${event.is_public ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'}`}>
+                  <span className="text-xs bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] px-2 py-0.5 rounded">{event.category}</span>
+                  <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded border ${event.is_public ? 'border-[#2A2622] text-[#B5B1AA]' : 'border-[#F59E0B]/40 text-[#F59E0B]'}`}>
                     {event.is_public ? <Globe size={11} /> : <Lock size={11} />}
                     {event.is_public ? 'Public' : 'Private'}
                   </span>
                 </div>
-                <h1 className="text-xl font-semibold text-white mb-1">{event.title}</h1>
+                <h1 className="text-xl font-semibold text-[#F0EDE8] mb-1">{event.title}</h1>
                 {event.club_name && (
-                  <p className="text-gray-600 text-xs mb-1">{event.club_name} - {event.user_role}</p>
+                  <p className="text-[#7C7A74] text-xs mb-1">{event.club_name} - {event.user_role}</p>
                 )}
-                <p className="text-gray-500 text-sm max-w-xl">{event.description}</p>
+                <p className="text-[#B5B1AA] text-sm max-w-2xl">{event.description}</p>
                 {event.event_date && (
-                  <p className="flex items-center gap-1.5 text-xs text-gray-600 mt-2">
+                  <p className="flex items-center gap-1.5 text-xs text-[#7C7A74] mt-2">
                     <Calendar size={12} />
                     {new Date(event.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
@@ -152,7 +152,7 @@ export default function EventPage() {
                 {canUpload && (
                   <button
                     onClick={() => setShowUpload(true)}
-                    className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm px-4 py-2 rounded-lg transition"
+                    className="flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] text-sm font-semibold px-4 py-2 rounded-md transition"
                   >
                     <Upload size={15} />
                     Upload media
@@ -160,7 +160,7 @@ export default function EventPage() {
                 )}
                 <button
                   onClick={() => setShowQR(true)}
-                  className="flex items-center gap-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] border border-[#2a2a2a] text-gray-300 text-sm px-4 py-2 rounded-lg transition"
+                  className="flex items-center gap-2 bg-[#171717] hover:bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-4 py-2 rounded-md transition"
                 >
                   <Share2 size={15} />
                   Share
@@ -170,11 +170,11 @@ export default function EventPage() {
 
             {/* Upload modal */}
             {showUpload && (
-              <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-                <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl w-full max-w-lg p-6">
+              <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+                <div className="bg-[#171717] border border-[#2A2622] rounded-lg w-full max-w-lg p-5">
                   <div className="flex items-center justify-between mb-5">
-                    <h2 className="text-white font-medium">Upload media</h2>
-                    <button onClick={() => { setShowUpload(false); setSelectedFiles([]) }} className="text-gray-500 hover:text-white">
+                    <h2 className="text-[#F0EDE8] font-medium">Upload media</h2>
+                    <button onClick={() => { setShowUpload(false); setSelectedFiles([]) }} className="text-[#7C7A74] hover:text-[#F0EDE8]">
                       <X size={18} />
                     </button>
                   </div>
@@ -184,12 +184,12 @@ export default function EventPage() {
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
                     onDragLeave={() => setDragOver(false)}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-xl p-8 text-center transition ${dragOver ? 'border-purple-500 bg-purple-500/5' : 'border-[#2a2a2a]'}`}
+                    className={`border border-dashed rounded-md p-8 text-center transition ${dragOver ? 'border-[#F59E0B] bg-[#F59E0B]/5' : 'border-[#2A2622]'}`}
                   >
-                    <ImageIcon size={28} className="text-gray-600 mx-auto mb-3" />
-                    <p className="text-gray-400 text-sm mb-1">Drag and drop files here</p>
-                    <p className="text-gray-600 text-xs mb-4">JPG, PNG, WEBP, MP4 supported</p>
-                    <label className="cursor-pointer bg-[#1e1e1e] hover:bg-[#2a2a2a] text-gray-300 text-sm px-4 py-2 rounded-lg transition">
+                    <ImageIcon size={28} className="text-[#7C7A74] mx-auto mb-3" />
+                    <p className="text-[#B5B1AA] text-sm mb-1">Drag and drop files here</p>
+                    <p className="text-[#7C7A74] text-xs mb-4">JPG, PNG, WEBP, MP4 supported</p>
+                    <label className="cursor-pointer bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#F0EDE8] text-sm px-4 py-2 rounded-md transition">
                       Browse files
                       <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
                     </label>
@@ -198,16 +198,16 @@ export default function EventPage() {
                   {/* Selected files preview */}
                   {selectedFiles.length > 0 && (
                     <div className="mt-4">
-                      <p className="text-xs text-gray-500 mb-2">{selectedFiles.length} file(s) selected</p>
+                      <p className="text-xs text-[#7C7A74] mb-2">{selectedFiles.length} file(s) selected</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedFiles.slice(0, 6).map((f, i) => (
-                          <div key={i} className="bg-[#1e1e1e] rounded-lg px-3 py-1.5 text-xs text-gray-400 flex items-center gap-1.5">
+                          <div key={i} className="bg-[#1A1A1A] border border-[#2A2622] rounded px-3 py-1.5 text-xs text-[#B5B1AA] flex items-center gap-1.5">
                             <ImageIcon size={11} />
                             {f.name.length > 20 ? f.name.slice(0, 20) + '...' : f.name}
                           </div>
                         ))}
                         {selectedFiles.length > 6 && (
-                          <div className="bg-[#1e1e1e] rounded-lg px-3 py-1.5 text-xs text-gray-500">
+                          <div className="bg-[#1A1A1A] border border-[#2A2622] rounded px-3 py-1.5 text-xs text-[#7C7A74]">
                             +{selectedFiles.length - 6} more
                           </div>
                         )}
@@ -218,14 +218,14 @@ export default function EventPage() {
                   <div className="flex gap-3 mt-5">
                     <button
                       onClick={() => { setShowUpload(false); setSelectedFiles([]) }}
-                      className="flex-1 py-2.5 rounded-lg border border-[#2a2a2a] text-sm text-gray-400 hover:text-white transition"
+                      className="flex-1 py-2.5 rounded-md border border-[#2A2622] text-sm text-[#B5B1AA] hover:text-[#F0EDE8] transition"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleUpload}
                       disabled={!selectedFiles.length || uploading}
-                      className="flex-1 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white py-2.5 rounded-lg text-sm font-medium transition"
+                      className="flex-1 bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] py-2.5 rounded-md text-sm font-semibold transition"
                     >
                       {uploading ? 'Uploading...' : `Upload ${selectedFiles.length || ''} file(s)`}
                     </button>
@@ -236,15 +236,15 @@ export default function EventPage() {
 
             {/* QR Modal — place here */}
             {showQR && (
-              <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-                <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl p-6 flex flex-col items-center gap-4 w-72">
+              <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+                <div className="bg-[#171717] border border-[#2A2622] rounded-lg p-6 flex flex-col items-center gap-4 w-72">
                   <div className="flex items-center justify-between w-full">
-                    <h2 className="text-white font-medium text-sm">Share event</h2>
-                    <button onClick={() => setShowQR(false)} className="text-gray-500 hover:text-white">
+                    <h2 className="text-[#F0EDE8] font-medium text-sm">Share event</h2>
+                    <button onClick={() => setShowQR(false)} className="text-[#7C7A74] hover:text-[#F0EDE8]">
                       <X size={18} />
                     </button>
                   </div>
-                  <div className="bg-white p-4 rounded-xl">
+                  <div className="bg-white p-4 rounded-md">
                     <QRCodeSVG
                       value={typeof window !== 'undefined' ? window.location.href : ''}
                       size={180}
@@ -252,13 +252,13 @@ export default function EventPage() {
                       fgColor="#000000"
                     />
                   </div>
-                  <p className="text-gray-500 text-xs text-center">Scan to open this event album</p>
+                  <p className="text-[#7C7A74] text-xs text-center">Scan to open this event album</p>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.href)
                       alert('Link copied!')
                     }}
-                    className="w-full bg-[#1e1e1e] hover:bg-[#2a2a2a] text-gray-300 text-sm py-2 rounded-lg transition"
+                    className="w-full bg-[#1A1A1A] hover:bg-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm py-2 rounded-md transition"
                   >
                     Copy link
                   </button>
@@ -268,13 +268,13 @@ export default function EventPage() {
 
             {/* Media grid */}
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-gray-500">{media.length} files</p>
+              <p className="text-sm text-[#7C7A74]">{media.length} files</p>
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2">
                 {[...Array(8)].map((_, i) => (
-                  <div key={i} className="aspect-square bg-[#141414] rounded-xl animate-pulse" />
+                  <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -283,7 +283,7 @@ export default function EventPage() {
 
             {hasMore && media.length > 0 && (
               <div ref={ref} className="h-10 flex items-center justify-center mt-4">
-                {loading && <p className="text-gray-600 text-xs">Loading more...</p>}
+                {loading && <p className="text-[#7C7A74] text-xs">Loading more...</p>}
               </div>
             )}
           </>

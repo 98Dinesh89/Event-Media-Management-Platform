@@ -49,25 +49,25 @@ export default function CreateEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        <Link href="/events" className="flex items-center gap-2 text-gray-500 hover:text-white text-sm mb-6 transition">
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-6 transition">
           <ArrowLeft size={15} />
           Back to events
         </Link>
 
-        <h1 className="text-lg font-semibold text-white mb-6">Create new event</h1>
+        <h1 className="text-lg font-semibold text-[#F0EDE8] mb-6">Create new event</h1>
 
-        {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 p-3 rounded-lg">{error}</p>}
+        {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 bg-[#171717] border border-[#2A2622] rounded-md p-5">
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Club</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Club</label>
             <select
               value={form.club_id}
               onChange={e => setForm({...form, club_id: e.target.value})}
-              className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
               required
             >
               {clubs.length === 0 ? (
@@ -79,53 +79,53 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Event title</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Event title</label>
             <input
               type="text"
               value={form.title}
               onChange={e => setForm({...form, title: e.target.value})}
-              className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
               placeholder="e.g. Annual Photography Contest 2024"
               required
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Description</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Description</label>
             <textarea
               value={form.description}
               onChange={e => setForm({...form, description: e.target.value})}
               rows={4}
-              className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500 resize-none"
+              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B] resize-none"
               placeholder="Describe the event..."
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-gray-400 mb-1.5 block">Category</label>
+              <label className="text-xs text-[#7C7A74] mb-1.5 block">Category</label>
               <select
                 value={form.category}
                 onChange={e => setForm({...form, category: e.target.value})}
-                className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
               >
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="text-sm text-gray-400 mb-1.5 block">Event date</label>
+              <label className="text-xs text-[#7C7A74] mb-1.5 block">Event date</label>
               <input
                 type="date"
                 value={form.event_date}
                 onChange={e => setForm({...form, event_date: e.target.value})}
-                className="w-full bg-[#141414] border border-[#1e1e1e] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Visibility</label>
+            <label className="text-xs text-[#7C7A74] mb-1.5 block">Visibility</label>
             <div className="flex gap-3">
               {[
                 { value: true, label: 'Public', desc: 'Anyone can view' },
@@ -135,14 +135,14 @@ export default function CreateEventPage() {
                   key={String(opt.value)}
                   type="button"
                   onClick={() => setForm({...form, is_public: opt.value})}
-                  className={`flex-1 p-3 rounded-lg border text-left transition ${
+                  className={`flex-1 p-3 rounded-md border text-left transition ${
                     form.is_public === opt.value
-                      ? 'border-purple-500 bg-purple-500/10'
-                      : 'border-[#1e1e1e] bg-[#141414] hover:border-[#2e2e2e]'
+                      ? 'border-[#F59E0B] bg-[#F59E0B]/10'
+                      : 'border-[#2A2622] bg-[#111111] hover:border-[#F59E0B]/60'
                   }`}
                 >
-                  <p className="text-sm text-white font-medium">{opt.label}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                  <p className="text-sm text-[#F0EDE8] font-medium">{opt.label}</p>
+                  <p className="text-xs text-[#7C7A74] mt-0.5">{opt.desc}</p>
                 </button>
               ))}
             </div>
@@ -151,14 +151,14 @@ export default function CreateEventPage() {
           <div className="flex gap-3 pt-2">
             <Link
               href="/events"
-              className="flex-1 text-center py-2.5 rounded-lg border border-[#1e1e1e] text-sm text-gray-400 hover:text-white hover:border-[#2e2e2e] transition"
+              className="flex-1 text-center py-2.5 rounded-md border border-[#2A2622] text-sm text-[#B5B1AA] hover:text-[#F0EDE8] hover:border-[#F59E0B]/60 transition"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
+              className="flex-1 bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] py-2.5 rounded-md text-sm font-semibold transition disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create event'}
             </button>
