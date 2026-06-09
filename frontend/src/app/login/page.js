@@ -28,32 +28,32 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#111111] text-[#F0EDE8] px-4">
-      <div className="bg-[#171717] p-6 sm:p-8 rounded-md w-full max-w-md border border-[#2A2622]">
-        <h1 className="text-2xl font-semibold text-[#F0EDE8] mb-2">Welcome back</h1>
-        <p className="text-[#B5B1AA] text-sm mb-6">Sign in to your account</p>
+    <div className="auth-page">
+      <div className="premium-form-card">
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Sign in to your account</p>
 
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="form-stack">
           <div>
-            <label className="text-xs text-[#7C7A74] mb-1.5 block">Email</label>
+            <label className="field-label">Email</label>
             <input
               type="email"
               value={form.email}
               onChange={e => setForm({...form, email: e.target.value})}
-              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+              className="premium-input"
               placeholder="you@example.com"
               required
             />
           </div>
           <div>
-            <label className="text-xs text-[#7C7A74] mb-1.5 block">Password</label>
+            <label className="field-label">Password</label>
             <input
               type="password"
               value={form.password}
               onChange={e => setForm({...form, password: e.target.value})}
-              className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+              className="premium-input"
               placeholder="Password"
               required
             />
@@ -61,7 +61,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] py-3 rounded-md font-semibold transition disabled:opacity-50"
+            className="premium-button premium-button-primary w-full disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>

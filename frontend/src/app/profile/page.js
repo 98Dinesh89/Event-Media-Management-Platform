@@ -97,12 +97,13 @@ export default function ProfilePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
+    <div className="app-page">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
+      <main className="app-main">
 
         {/* Profile header */}
-        <div className="bg-[#171717] border border-[#2A2622] rounded-md p-6 sm:p-7 mb-10 flex flex-col sm:flex-row items-start gap-6">
+        <div className="premium-form-card mb-10" style={{ width: '100%', maxWidth: 'none' }}>
+          <div className="flex flex-col sm:flex-row items-start gap-6">
           <div className="w-20 h-20 rounded-full bg-[#F59E0B] flex items-center justify-center shrink-0">
             <span className="text-3xl text-[#111111] font-semibold">{user?.name?.[0]?.toUpperCase()}</span>
           </div>
@@ -145,6 +146,7 @@ export default function ProfilePage() {
               {findingPhotos ? <Loader size={11} className="animate-spin" /> : <User size={11} />}
               {findingPhotos ? 'Searching...' : 'Find my photos'}
             </button>
+          </div>
           </div>
         </div>
 

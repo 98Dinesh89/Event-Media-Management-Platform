@@ -55,15 +55,15 @@ export default function JoinClubPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
+    <div className="app-page">
       <Navbar />
-      <main className="max-w-lg mx-auto px-5 sm:px-8 py-8 sm:py-10">
+      <main className="app-main">
         <Link href="/dashboard" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-8 transition">
           <ArrowLeft size={15} />
           Back to dashboard
         </Link>
 
-        <h1 className="text-xl font-semibold text-[#F0EDE8] mb-7">Join or create a club</h1>
+        <h1 className="page-title form-page-title">Join or create a club</h1>
 
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
@@ -83,11 +83,11 @@ export default function JoinClubPage() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 bg-[#171717] border border-[#2A2622] rounded-md p-6">
+        <form onSubmit={handleSubmit} className="premium-form-card form-stack">
           {mode === 'join' ? (
             <>
               <div>
-                <label className="text-xs text-[#7C7A74] mb-1.5 block">Select club</label>
+                <label className="field-label">Select club</label>
                 {clubs.length === 0 ? (
                   <p className="text-[#7C7A74] text-sm bg-[#111111] border border-[#2A2622] rounded-md p-4">
                     No clubs available to join
@@ -96,7 +96,7 @@ export default function JoinClubPage() {
                   <select
                     value={selectedClubId}
                     onChange={e => setSelectedClubId(e.target.value)}
-                    className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
+                    className="premium-select"
                     required
                   >
                     <option value="">Choose a club...</option>
@@ -109,11 +109,11 @@ export default function JoinClubPage() {
                 )}
               </div>
               <div>
-                <label className="text-xs text-[#7C7A74] mb-1.5 block">Your role</label>
+                <label className="field-label">Your role</label>
                 <select
                   value={selectedRole}
                   onChange={e => setSelectedRole(e.target.value)}
-                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
+                  className="premium-select"
                 >
                   <option value="viewer">Viewer</option>
                   <option value="member">Club Member</option>
@@ -124,23 +124,23 @@ export default function JoinClubPage() {
           ) : (
             <>
               <div>
-                <label className="text-xs text-[#7C7A74] mb-1.5 block">Club name</label>
+                <label className="field-label">Club name</label>
                 <input
                   type="text"
                   value={clubName}
                   onChange={e => setClubName(e.target.value)}
-                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                  className="premium-input"
                   placeholder="e.g. Photography Club"
                   required
                 />
               </div>
               <div>
-                <label className="text-xs text-[#7C7A74] mb-1.5 block">Description</label>
+                <label className="field-label">Description</label>
                 <textarea
                   value={clubDescription}
                   onChange={e => setClubDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B] resize-none"
+                  className="premium-textarea"
                   placeholder="What is this club about?"
                 />
               </div>
@@ -150,7 +150,7 @@ export default function JoinClubPage() {
           <button
             type="submit"
             disabled={loading || (mode === 'join' && clubs.length === 0)}
-            className="w-full bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] py-3 rounded-md text-sm font-semibold transition mt-2"
+            className="premium-button premium-button-primary w-full disabled:opacity-50 mt-2"
           >
             {loading ? 'Processing...' : mode === 'join' ? 'Join club' : 'Create club'}
           </button>

@@ -59,12 +59,17 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
+    <div className="app-page">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
-        <h1 className="text-xl font-semibold text-[#F0EDE8] mb-7">Search media</h1>
+      <main className="app-main">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Search media</h1>
+            <p className="page-subtitle">Find event photos by caption, tag, uploader, or date range.</p>
+          </div>
+        </div>
 
-        <form onSubmit={handleSearch} className="bg-[#171717] border border-[#2A2622] rounded-md p-5 sm:p-6 mb-10">
+        <form onSubmit={handleSearch} className="premium-form-card mb-10" style={{ width: '100%', maxWidth: 'none' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
             <div>
               <label className="text-xs text-[#7C7A74] mb-1.5 block">Event name or caption</label>
@@ -73,7 +78,7 @@ export default function SearchPage() {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="e.g. Annual fest"
-                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                className="premium-input"
               />
             </div>
             <div>
@@ -83,7 +88,7 @@ export default function SearchPage() {
                 value={tag}
                 onChange={e => setTag(e.target.value)}
                 placeholder="e.g. mountains, crowd"
-                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                className="premium-input"
               />
             </div>
             <div>
@@ -93,7 +98,7 @@ export default function SearchPage() {
                 value={uploader}
                 onChange={e => setUploader(e.target.value)}
                 placeholder="e.g. Dinesh"
-                className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                className="premium-input"
               />
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -103,7 +108,7 @@ export default function SearchPage() {
                   type="date"
                   value={fromDate}
                   onChange={e => setFromDate(e.target.value)}
-                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
+                  className="premium-input"
                 />
               </div>
               <div>
@@ -112,7 +117,7 @@ export default function SearchPage() {
                   type="date"
                   value={toDate}
                   onChange={e => setToDate(e.target.value)}
-                  className="w-full bg-[#111111] border border-[#2A2622] rounded-md px-4 py-3 text-sm text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B]"
+                  className="premium-input"
                 />
               </div>
             </div>
@@ -121,7 +126,7 @@ export default function SearchPage() {
           <div className="flex gap-3">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold text-sm px-5 py-3 rounded-md transition"
+              className="premium-button premium-button-primary"
             >
               <Search size={14} />
               Search
@@ -130,7 +135,7 @@ export default function SearchPage() {
               <button
                 type="button"
                 onClick={clearAll}
-                className="flex items-center gap-2 bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-5 py-3 rounded-md transition"
+                className="premium-button premium-button-secondary"
               >
                 <X size={14} />
                 Clear

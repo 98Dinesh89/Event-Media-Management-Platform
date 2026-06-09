@@ -34,17 +34,18 @@ export default function AnalyticsPage() {
   }, [selectedClub])
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
+    <div className="app-page">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
-        <div className="flex items-center gap-3 mb-10">
-          <BarChart2 size={18} className="text-[#F59E0B]" />
-          <h1 className="text-xl font-semibold text-[#F0EDE8]">Analytics</h1>
-          {selectedClub && (
-            <span className="text-xs bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20 px-2 py-0.5 rounded ml-2">
-              {selectedClub.name}
-            </span>
-          )}
+      <main className="app-main">
+        <div className="page-header">
+          <div>
+            <div className="flex items-center gap-3">
+              <BarChart2 size={24} className="text-[#F59E0B]" />
+              <h1 className="page-title">Analytics</h1>
+              {selectedClub && <span className="premium-chip">{selectedClub.name}</span>}
+            </div>
+            <p className="page-subtitle">Track event activity, media performance, and recent uploads.</p>
+          </div>
         </div>
 
         {loading ? (
@@ -56,7 +57,7 @@ export default function AnalyticsPage() {
         ) : stats ? (
           <>
             {/* Stats grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+            <div className="analytics-stats-grid">
               {[
                 { label: 'Total Events', value: stats.total_events, icon: Calendar },
                 { label: 'Total Media', value: stats.total_media, icon: Image },
@@ -65,12 +66,12 @@ export default function AnalyticsPage() {
                 { label: 'Total Members', value: stats.total_members, icon: Users },
                 { label: 'Total Clubs', value: stats.total_clubs, icon: BarChart2 },
               ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="bg-[#171717] border border-[#2A2622] border-l-[#F59E0B] border-l-2 rounded-md p-5">
-                  <div className="flex items-center gap-2.5 mb-4">
+                <div key={label} className="stat-card">
+                  <div className="stat-label">
                     <Icon size={15} className="text-[#7C7A74]" />
-                    <span className="text-xs text-[#7C7A74]">{label}</span>
+                    <span>{label}</span>
                   </div>
-                  <p className="text-3xl font-semibold text-[#F0EDE8]">{value || 0}</p>
+                  <p className="stat-value">{value || 0}</p>
                 </div>
               ))}
             </div>
@@ -78,7 +79,7 @@ export default function AnalyticsPage() {
             {/* Top events */}
             {stats.top_events?.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-lg font-semibold text-[#F0EDE8] mb-4">Top Events by Media</h2>
+                <h2 className="section-title mb-4">Top Events by Media</h2>
                 <div className="bg-[#171717] border border-[#2A2622] rounded-md overflow-hidden">
                   {stats.top_events.map((event, i) => (
                     <div key={event.id} className={`flex items-center justify-between gap-4 px-5 py-4 ${i !== stats.top_events.length - 1 ? 'border-b border-[#2A2622]' : ''}`}>
@@ -106,8 +107,8 @@ export default function AnalyticsPage() {
             {/* Most liked media */}
             {stats.most_liked?.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-lg font-semibold text-[#F0EDE8] mb-4">Most Liked Photos</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <h2 className="section-title mb-4">Most Liked Photos</h2>
+                <div className="media-grid">
                   {stats.most_liked.map(media => (
                     <div key={media.id} className="relative group">
                       <div className="aspect-square bg-[#171717] rounded-[3px] overflow-hidden">
@@ -126,7 +127,7 @@ export default function AnalyticsPage() {
             {/* Recent activity */}
             {stats.recent_uploads?.length > 0 && (
               <div>
-                <h2 className="text-lg font-semibold text-[#F0EDE8] mb-4">Recent Uploads</h2>
+                <h2 className="section-title mb-4">Recent Uploads</h2>
                 <div className="bg-[#171717] border border-[#2A2622] rounded-md overflow-hidden">
                   {stats.recent_uploads.map((media, i) => (
                     <div key={media.id} className={`flex items-center gap-4 px-5 py-4 ${i !== stats.recent_uploads.length - 1 ? 'border-b border-[#2A2622]' : ''}`}>

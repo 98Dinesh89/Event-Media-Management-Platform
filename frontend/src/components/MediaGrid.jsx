@@ -129,11 +129,11 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+      <div className="media-grid">
         {media.map(item => (
           <div
             key={item.id}
-            className="aspect-square bg-[#171717] rounded-[3px] overflow-hidden cursor-pointer relative group border border-transparent hover:border-[#F59E0B] transition"
+            className="media-tile group"
             onClick={() => openMedia(item)}
           >
             {item.media_type === 'video' ? (
@@ -159,24 +159,24 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
       {/* Lightbox */}
       {selected && (
-        <div className="fixed inset-0 bg-[#050505] z-50 flex flex-col lg:flex-row">
-          <div className="flex-1 flex items-center justify-center p-5 sm:p-6 lg:p-10 relative min-h-0">
+        <div className="lightbox">
+          <div className="lightbox-stage">
             <button
               onClick={() => { setSelected(null); setComments([]) }}
-              className="absolute top-5 left-5 text-[#B5B1AA] hover:text-[#F0EDE8] transition bg-[#111111]/80 border border-[#2A2622] rounded-md p-2.5"
+              className="lightbox-close"
             >
               <X size={18} />
             </button>
             {selected.media_type === 'video' ? (
-              <video src={selected.url} controls className="max-h-full max-w-full rounded-md" />
+              <video src={selected.url} controls className="lightbox-media" />
             ) : (
-              <img src={selected.url} alt="" className="max-h-full max-w-full object-contain rounded-md" />
+              <img src={selected.url} alt="" className="lightbox-media" />
             )}
           </div>
 
-          <aside className="w-full lg:w-88 xl:w-[26rem] bg-[#111111] border-t lg:border-t-0 lg:border-l border-[#2A2622] flex flex-col max-h-[48vh] lg:max-h-none">
+          <aside className="lightbox-panel">
             {/* Info */}
-            <div className="p-5 border-b border-[#2A2622]">
+            <div className="lightbox-info">
               <p className="text-xs text-[#7C7A74] mb-1.5">Uploaded by</p>
               <p className="text-sm text-[#F0EDE8] font-medium">{selected.uploader_name}</p>
               <p className="text-xs text-[#7C7A74] mt-1">
@@ -194,14 +194,10 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Actions */}
-            <div className="p-5 border-b border-[#2A2622] flex items-center gap-3 relative">
+            <div className="lightbox-actions relative">
               <button
                 onClick={() => handleLike(selected.id)}
-                className={`flex items-center gap-2 text-sm px-4 py-2.5 rounded-md transition active:scale-95 ${
-                  likes[selected.id]
-                    ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30'
-                    : 'bg-[#171717] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'
-                }`}
+                className={`media-action-button ${likes[selected.id] ? 'active' : ''}`}
               >
                 <Heart size={14} fill={likes[selected.id] ? 'currentColor' : 'none'} />
                 {String(selected.like_count || 0)}
@@ -209,16 +205,14 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleFavourite(selected.id)}
-                className={`p-2.5 rounded-md transition border border-transparent bg-[#171717] ${
-                  favourites[selected.id] ? 'text-[#F59E0B]' : 'text-[#7C7A74] hover:text-[#F0EDE8]'
-                }`}
+                className={`media-action-button ${favourites[selected.id] ? 'active' : ''}`}
               >
                 <Bookmark size={16} fill={favourites[selected.id] ? 'currentColor' : 'none'} />
               </button>
 
               <button
                 onClick={() => setShowTagSearch(!showTagSearch)}
-                className="p-2.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] bg-[#171717] transition"
+                className="media-action-button"
               >
                 <UserPlus size={16} />
               </button>
@@ -250,7 +244,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
               <button
                 onClick={() => handleDownload(selected.id)}
-                className="p-2.5 rounded-md text-[#7C7A74] hover:text-[#F0EDE8] bg-[#171717] transition"
+                className="media-action-button"
               >
                 <Download size={16} />
               </button>
@@ -258,7 +252,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
               {(user?.id === selected.uploaded_by || eventRole === 'admin' || selected.user_role === 'admin') && (
                 <button
                   onClick={() => handleDelete(selected.id)}
-                  className="p-2.5 rounded-md text-[#7C7A74] hover:text-red-400 bg-[#171717] transition ml-auto"
+                  className="media-action-button ml-auto hover:text-red-400"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -266,15 +260,15 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Comments */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+            <div className="lightbox-comments">
               {loadingComments ? (
                 <p className="text-[#7C7A74] text-xs">Loading comments...</p>
               ) : comments.length === 0 ? (
                 <p className="text-[#7C7A74] text-xs">No comments yet</p>
               ) : (
                 comments.map(c => (
-                  <div key={c.id} className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-[#1A1A1A] border border-[#2A2622] flex items-center justify-center shrink-0">
+                  <div key={c.id} className="comment-row">
+                    <div className="comment-avatar">
                       <span className="text-xs text-[#F59E0B]">{c.name?.[0]?.toUpperCase()}</span>
                     </div>
                     <div>
@@ -292,17 +286,17 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
             </div>
 
             {/* Comment input */}
-            <form onSubmit={handleComment} className="p-5 border-t border-[#2A2622] flex gap-3">
+            <form onSubmit={handleComment} className="lightbox-comment-form">
               <input
                 type="text"
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
                 placeholder="Add a comment..."
-                className="flex-1 bg-[#171717] border border-[#2A2622] rounded-md px-4 py-2.5 text-sm text-[#F0EDE8] placeholder-[#7C7A74] focus:outline-none focus:border-[#F59E0B]"
+                className="premium-input"
               />
               <button
                 type="submit"
-                className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] font-semibold px-4 py-2.5 rounded-md text-sm transition"
+                className="premium-button premium-button-primary"
               >
                 Post
               </button>

@@ -114,9 +114,9 @@ export default function EventPage() {
   const canUpload = event?.user_role === 'admin' || (event?.user_role === 'photographer' && event?.created_by === user?.id)
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
+    <div className="app-page">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
+      <main className="app-main-wide">
 
         {/* Back */}
         <Link href="/events" className="flex items-center gap-2 text-[#7C7A74] hover:text-[#F0EDE8] text-sm mb-8 transition">
@@ -127,7 +127,7 @@ export default function EventPage() {
         {event && (
           <>
             {/* Event header */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-10 border-b border-[#2A2622] pb-8">
+            <div className="page-header border-b border-[#2A2622] pb-8">
               <div>
                 <div className="flex items-center gap-2.5 mb-3">
                   <span className="text-xs bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] px-2.5 py-1 rounded">{event.category}</span>
@@ -136,7 +136,7 @@ export default function EventPage() {
                     {event.is_public ? 'Public' : 'Private'}
                   </span>
                 </div>
-                <h1 className="text-2xl font-semibold text-[#F0EDE8] mb-2">{event.title}</h1>
+                <h1 className="page-title">{event.title}</h1>
                 {event.club_name && (
                   <p className="text-[#7C7A74] text-xs mb-2">{event.club_name} - {event.user_role}</p>
                 )}
@@ -152,7 +152,7 @@ export default function EventPage() {
                 {canUpload && (
                   <button
                     onClick={() => setShowUpload(true)}
-                    className="flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] text-sm font-semibold px-5 py-3 rounded-md transition"
+                    className="premium-button premium-button-primary"
                   >
                     <Upload size={15} />
                     Upload media
@@ -160,7 +160,7 @@ export default function EventPage() {
                 )}
                 <button
                   onClick={() => setShowQR(true)}
-                  className="flex items-center gap-2 bg-[#171717] hover:bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm px-5 py-3 rounded-md transition"
+                  className="premium-button premium-button-secondary"
                 >
                   <Share2 size={15} />
                   Share
