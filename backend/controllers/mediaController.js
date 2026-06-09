@@ -33,12 +33,12 @@ const uploadMedia = async (req, res) => {
 
       const result = await pool.query(
         `INSERT INTO media (event_id, uploaded_by, url, thumbnail_url, public_id, media_type, tags, caption, is_public)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
         [
           event_id,
           req.user.id,
-          file.path,
-          file.path.replace('/upload/', '/upload/w_400,h_300,c_fill/'),
+          file.path.replace('/upload/', '/upload/q_auto,f_auto/'),
+          file.path.replace('/upload/', '/upload/w_400,h_300,c_fill,q_auto,f_auto/'),
           file.filename,
           file.mimetype?.startsWith('video') ? 'video' : 'image',
           tags,
