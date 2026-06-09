@@ -7,6 +7,7 @@ import { useClub } from '@/context/ClubContext'
 import { useEffect, useState, useRef } from 'react'
 import { Bell, Search, LogOut, Camera, Home, Calendar, ChevronDown, Plus, Users } from 'lucide-react'
 import api from '@/lib/api'
+import { BarChart2 } from 'lucide-react'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -150,6 +151,10 @@ export default function Navbar() {
         <Link href="/search" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
           <Search size={15} />
           Search
+        </Link>
+        <Link href="/analytics" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
+            <BarChart2 size={15} />
+            Analytics
         </Link>
       </div>
 

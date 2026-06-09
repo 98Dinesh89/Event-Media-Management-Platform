@@ -47,6 +47,7 @@ app.use('/api/events', require('./routes/events'))
 app.use('/api/media', require('./routes/media'))
 app.use('/api/social', require('./routes/social'))
 app.use('/api/ai', require('./routes/ai'))
+app.use('/api/analytics', require('./routes/analytics'))
 
 require('./sockets/notificationSocket')(io)
 
