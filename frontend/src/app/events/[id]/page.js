@@ -172,62 +172,73 @@ export default function EventPage() {
 
             {/* Upload modal */}
             {showUpload && (
-              <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                <div className="bg-[#171717] border border-[#2A2622] rounded-lg w-full max-w-lg p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-[#F0EDE8] font-medium">Upload media</h2>
-                    <button onClick={() => { setShowUpload(false); setSelectedFiles([]) }} className="text-[#7C7A74] hover:text-[#F0EDE8] p-1.5">
+              <div className="modal-backdrop">
+                <div className="upload-modal">
+                  <div className="upload-modal-header">
+                    <div>
+                      <h2 className="upload-modal-title">Upload media</h2>
+                      <p className="upload-modal-subtitle">Add photos or videos to this event album.</p>
+                    </div>
+                    <button
+                      onClick={() => { setShowUpload(false); setSelectedFiles([]) }}
+                      className="upload-close-button"
+                      aria-label="Close upload modal"
+                    >
                       <X size={18} />
                     </button>
                   </div>
 
-                  {/* Drop zone */}
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={handleDrop}
-                    className={`border border-dashed rounded-md p-10 text-center transition ${dragOver ? 'border-[#F59E0B] bg-[#F59E0B]/5' : 'border-[#2A2622]'}`}
-                  >
-                    <ImageIcon size={28} className="text-[#7C7A74] mx-auto mb-3" />
-                    <p className="text-[#B5B1AA] text-sm mb-1">Drag and drop files here</p>
-                    <p className="text-[#7C7A74] text-xs mb-4">JPG, PNG, WEBP, MP4 supported</p>
-                    <label className="cursor-pointer bg-[#1A1A1A] hover:bg-[#2A2622] border border-[#2A2622] text-[#F0EDE8] text-sm px-5 py-2.5 rounded-md transition">
-                      Browse files
-                      <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
-                    </label>
+                  <div className="upload-modal-body">
+                    {/* Drop zone */}
+                    <div
+                      onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                      onDragLeave={() => setDragOver(false)}
+                      onDrop={handleDrop}
+                      className={`upload-dropzone ${dragOver ? 'dragging' : ''}`}
+                    >
+                      <div className="upload-icon-box">
+                        <ImageIcon size={28} />
+                      </div>
+                      <p className="upload-dropzone-title">Drag and drop files here</p>
+                      <p className="upload-dropzone-help">JPG, PNG, WEBP, and MP4 files are supported.</p>
+                      <label className="premium-button premium-button-secondary upload-browse-button">
+                        Browse files
+                        <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
+                      </label>
+                    </div>
+
+                    {/* Selected files preview */}
+                    {selectedFiles.length > 0 && (
+                      <div className="selected-files-panel">
+                        <p className="selected-files-title">{selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} selected</p>
+                        <div className="selected-file-grid">
+                          {selectedFiles.slice(0, 6).map((f, i) => (
+                            <div key={i} className="selected-file-chip">
+                              <ImageIcon size={12} />
+                              {f.name.length > 26 ? f.name.slice(0, 26) + '...' : f.name}
+                            </div>
+                          ))}
+                          {selectedFiles.length > 6 && (
+                            <div className="selected-file-chip">
+                              +{selectedFiles.length - 6} more
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Selected files preview */}
-                  {selectedFiles.length > 0 && (
-                    <div className="mt-5">
-                      <p className="text-xs text-[#7C7A74] mb-3">{selectedFiles.length} file(s) selected</p>
-                      <div className="flex flex-wrap gap-2.5">
-                        {selectedFiles.slice(0, 6).map((f, i) => (
-                          <div key={i} className="bg-[#1A1A1A] border border-[#2A2622] rounded px-3 py-2 text-xs text-[#B5B1AA] flex items-center gap-1.5">
-                            <ImageIcon size={11} />
-                            {f.name.length > 20 ? f.name.slice(0, 20) + '...' : f.name}
-                          </div>
-                        ))}
-                        {selectedFiles.length > 6 && (
-                          <div className="bg-[#1A1A1A] border border-[#2A2622] rounded px-3 py-2 text-xs text-[#7C7A74]">
-                            +{selectedFiles.length - 6} more
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 mt-6">
+                  <div className="upload-modal-footer">
                     <button
                       onClick={() => { setShowUpload(false); setSelectedFiles([]) }}
-                      className="flex-1 py-2.5 rounded-md border border-[#2A2622] text-sm text-[#B5B1AA] hover:text-[#F0EDE8] transition"
+                      className="premium-button premium-button-secondary"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleUpload}
                       disabled={!selectedFiles.length || uploading}
-                      className="flex-1 bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-50 text-[#111111] py-2.5 rounded-md text-sm font-semibold transition"
+                      className="premium-button premium-button-primary disabled:opacity-50"
                     >
                       {uploading ? 'Uploading...' : `Upload ${selectedFiles.length || ''} file(s)`}
                     </button>
