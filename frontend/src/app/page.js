@@ -18,14 +18,6 @@ export default function Home() {
           <Camera size={18} className="text-[#F59E0B]" />
           <span className="text-[#F0EDE8] font-semibold text-sm">MediaVault</span>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="text-[#B5B1AA] hover:text-[#F0EDE8] text-sm transition px-4 py-2">
-            Sign in
-          </Link>
-          <Link href="/register" className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] text-sm font-semibold px-5 py-2.5 rounded-md transition">
-            Get started
-          </Link>
-        </div>
       </nav>
 
       <main className="max-w-5xl mx-auto px-5 sm:px-8">

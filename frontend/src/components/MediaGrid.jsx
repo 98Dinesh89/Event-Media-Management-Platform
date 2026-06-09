@@ -177,20 +177,22 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
           <aside className="lightbox-panel">
             {/* Info */}
             <div className="lightbox-info">
-              <p className="text-xs text-[#7C7A74] mb-1.5">Uploaded by</p>
-              <p className="text-sm text-[#F0EDE8] font-medium">{selected.uploader_name}</p>
-              <p className="text-xs text-[#7C7A74] mt-1">
-                {new Date(selected.created_at).toLocaleDateString()}
-              </p>
+              <div className="lightbox-info-card">
+                <p className="text-xs text-[#7C7A74]">Uploaded by</p>
+                <div className="lightbox-meta-row">
+                  <p className="lightbox-uploader">{selected.uploader_name}</p>
+                  <p className="lightbox-date">{new Date(selected.created_at).toLocaleDateString()}</p>
+                </div>
                 {selected.tags?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="tag-row">
                     {selected.tags.map(tag => (
-                      <span key={tag} className="text-xs bg-[#1A1A1A] text-[#F59E0B] px-2.5 py-1 rounded border border-[#2A2622]">
+                      <span key={tag} className="premium-chip">
                         {tag}
                       </span>
                     ))}
                   </div>
                 )}
+              </div>
             </div>
 
             {/* Actions */}

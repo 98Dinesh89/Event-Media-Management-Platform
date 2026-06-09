@@ -80,21 +80,21 @@ export default function AnalyticsPage() {
             {stats.top_events?.length > 0 && (
               <div className="mb-10">
                 <h2 className="section-title mb-4">Top Events by Media</h2>
-                <div className="bg-[#171717] border border-[#2A2622] rounded-md overflow-hidden">
+                <div className="data-card">
                   {stats.top_events.map((event, i) => (
-                    <div key={event.id} className={`flex items-center justify-between gap-4 px-5 py-4 ${i !== stats.top_events.length - 1 ? 'border-b border-[#2A2622]' : ''}`}>
+                    <div key={event.id} className="data-row">
                       <div className="flex items-center gap-4 min-w-0">
-                        <span className="text-xs text-[#F59E0B] w-5 font-semibold">#{i + 1}</span>
+                        <span className="rank-pill">{i + 1}</span>
                         <div className="min-w-0">
-                          <p className="text-sm text-[#F0EDE8]">{event.title}</p>
-                          <p className="text-xs text-[#7C7A74]">{event.club_name}</p>
+                          <p className="text-sm text-[#F0EDE8] font-semibold">{event.title}</p>
+                          <p className="text-xs text-[#7C7A74] mt-1">{event.club_name}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-5 shrink-0">
                         <span className="flex items-center gap-1 text-xs text-[#7C7A74]">
                           <Image size={11} /> {event.media_count}
                         </span>
-                        <span className={`text-xs px-2 py-0.5 rounded border ${event.is_public ? 'border-[#2A2622] text-[#B5B1AA]' : 'border-[#F59E0B]/40 text-[#F59E0B]'}`}>
+                        <span className={`premium-chip ${event.is_public ? 'border-[#2A2622] text-[#B5B1AA]' : ''}`}>
                           {event.is_public ? 'Public' : 'Private'}
                         </span>
                       </div>
@@ -110,10 +110,8 @@ export default function AnalyticsPage() {
                 <h2 className="section-title mb-4">Most Liked Photos</h2>
                 <div className="media-grid">
                   {stats.most_liked.map(media => (
-                    <div key={media.id} className="relative group">
-                      <div className="aspect-square bg-[#171717] rounded-[3px] overflow-hidden">
-                        <img src={media.thumbnail_url || media.url} alt="" className="w-full h-full object-cover" />
-                      </div>
+                    <div key={media.id} className="analytics-media-card group">
+                      <img src={media.thumbnail_url || media.url} alt="" />
                       <div className="absolute bottom-2 right-2 bg-[#111111]/80 border border-[#2A2622] rounded px-2 py-1 flex items-center gap-1.5">
                         <Heart size={10} className="text-[#F59E0B]" />
                         <span className="text-xs text-[#F0EDE8]">{media.like_count}</span>
@@ -128,15 +126,17 @@ export default function AnalyticsPage() {
             {stats.recent_uploads?.length > 0 && (
               <div>
                 <h2 className="section-title mb-4">Recent Uploads</h2>
-                <div className="bg-[#171717] border border-[#2A2622] rounded-md overflow-hidden">
+                <div className="data-card">
                   {stats.recent_uploads.map((media, i) => (
-                    <div key={media.id} className={`flex items-center gap-4 px-5 py-4 ${i !== stats.recent_uploads.length - 1 ? 'border-b border-[#2A2622]' : ''}`}>
-                      <div className="w-12 h-12 rounded-[3px] overflow-hidden shrink-0">
-                        <img src={media.thumbnail_url || media.url} alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#F0EDE8] truncate">{media.event_title}</p>
-                        <p className="text-xs text-[#7C7A74]">by {media.uploader_name}</p>
+                    <div key={media.id} className="data-row">
+                      <div className="upload-row-main">
+                        <div className="w-12 h-12 rounded-[3px] overflow-hidden shrink-0">
+                          <img src={media.thumbnail_url || media.url} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm text-[#F0EDE8] truncate">{media.event_title}</p>
+                          <p className="text-xs text-[#7C7A74]">by {media.uploader_name}</p>
+                        </div>
                       </div>
                       <span className="text-xs text-[#7C7A74]">{new Date(media.created_at).toLocaleDateString()}</span>
                     </div>

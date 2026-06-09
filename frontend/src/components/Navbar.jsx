@@ -172,16 +172,16 @@ export default function Navbar() {
           </button>
 
           {showNotifs && (
-            <div className="absolute right-0 top-10 w-80 bg-[#171717] border border-[#2A2622] rounded-lg shadow-2xl z-50 overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#2A2622]">
-                <p className="text-sm font-medium text-[#F0EDE8]">Notifications</p>
+            <div className="premium-notifications">
+              <div className="premium-notifications-header">
+                <p>Notifications</p>
               </div>
               <div className="max-h-72 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="text-[#7C7A74] text-sm text-center py-6">No notifications</p>
+                  <p className="premium-notification-empty">No notifications</p>
                 ) : (
                   notifications.map(n => (
-                    <div key={n.id} className={`px-4 py-3 border-b border-[#2A2622] hover:bg-[#1A1A1A] transition ${!n.is_read ? 'bg-[#F59E0B]/5' : ''}`}>
+                    <div key={n.id} className={`premium-notification-item ${!n.is_read ? 'bg-[#F59E0B]/5' : ''}`}>
                       <p className="text-sm text-[#B5B1AA]">
                         <span className="text-[#F0EDE8] font-medium">{n.from_name}</span> {n.message}
                       </p>

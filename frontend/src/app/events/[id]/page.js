@@ -127,28 +127,30 @@ export default function EventPage() {
         {event && (
           <>
             {/* Event header */}
-            <div className="page-header border-b border-[#2A2622] pb-8">
-              <div>
-                <div className="flex items-center gap-2.5 mb-3">
-                  <span className="text-xs bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] px-2.5 py-1 rounded">{event.category}</span>
-                  <span className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded border ${event.is_public ? 'border-[#2A2622] text-[#B5B1AA]' : 'border-[#F59E0B]/40 text-[#F59E0B]'}`}>
+            <div className="event-detail-header">
+              <div className="event-detail-meta">
+                <div className="event-detail-badges">
+                  <span className="premium-chip border-[#2A2622] text-[#B5B1AA]">{event.category}</span>
+                  <span className={`premium-chip ${event.is_public ? 'border-[#2A2622] text-[#B5B1AA]' : ''}`}>
                     {event.is_public ? <Globe size={11} /> : <Lock size={11} />}
                     {event.is_public ? 'Public' : 'Private'}
                   </span>
                 </div>
-                <h1 className="page-title">{event.title}</h1>
+                <h1 className="event-detail-title">{event.title}</h1>
                 {event.club_name && (
-                  <p className="text-[#7C7A74] text-xs mb-2">{event.club_name} - {event.user_role}</p>
+                  <p className="text-[#7C7A74] text-sm">{event.club_name} - {event.user_role}</p>
                 )}
-                <p className="text-[#B5B1AA] text-sm max-w-2xl leading-relaxed">{event.description}</p>
+                {event.description && (
+                  <p className="text-[#B5B1AA] text-sm max-w-2xl leading-relaxed">{event.description}</p>
+                )}
                 {event.event_date && (
-                  <p className="flex items-center gap-2 text-xs text-[#7C7A74] mt-3">
+                  <p className="flex items-center gap-2 text-sm text-[#7C7A74]">
                     <Calendar size={12} />
                     {new Date(event.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 )}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="event-detail-actions">
                 {canUpload && (
                   <button
                     onClick={() => setShowUpload(true)}
@@ -267,8 +269,11 @@ export default function EventPage() {
             )}
 
             {/* Media grid */}
-            <div className="flex items-center justify-between mb-5">
-              <p className="text-sm text-[#7C7A74]">{media.length} files</p>
+            <div className="media-section-header">
+              <div>
+                <h2 className="section-title">Media</h2>
+                <p className="text-sm text-[#7C7A74] mt-1">{media.length} files in this event</p>
+              </div>
             </div>
 
             {loading ? (

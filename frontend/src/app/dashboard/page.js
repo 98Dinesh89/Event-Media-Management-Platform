@@ -139,10 +139,13 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <p className="event-description">{event.description || 'No description'}</p>
-                    <div className="event-meta-row">
-                      <span>
-                      {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'No date'}
-                      </span>
+                    <div className="event-card-footer">
+                      <div className="event-taxonomy">
+                        <span className="premium-chip border-[#2A2622] text-[#B5B1AA]">
+                          {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'No date'}
+                        </span>
+                        <span className="event-club-meta">{event.club_name || 'Club'} - {event.user_role}</span>
+                      </div>
                       <span>{event.media_count || 0} photos</span>
                     </div>
                   </div>

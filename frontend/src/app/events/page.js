@@ -143,11 +143,13 @@ export default function EventsPage() {
                       <h3 className="event-title group-hover:text-[#F59E0B] transition">{event.title}</h3>
                     </div>
                     <p className="event-description">{event.description || 'No description'}</p>
-                    <div className="event-meta-row">
-                      <span className="premium-chip border-[#2A2622] text-[#B5B1AA]">{event.category || 'General'}</span>
-                      <span>{event.media_count || 0} files</span>
+                    <div className="event-card-footer">
+                      <div className="event-taxonomy">
+                        <span className="premium-chip border-[#2A2622] text-[#B5B1AA]">{event.category || 'General'}</span>
+                        <span className="event-club-meta">{event.club_name || 'Club'} - {event.user_role}</span>
+                      </div>
+                      <span className="text-xs text-[#7C7A74]">{event.media_count || 0} files</span>
                     </div>
-                    <p className="text-xs text-[#7C7A74] mt-4">{event.club_name || 'Club'} - {event.user_role}</p>
                   </div>
                 </div>
               </Link>

@@ -68,16 +68,16 @@ export default function JoinClubPage() {
         {error && <p className="text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 p-3 rounded-md">{error}</p>}
 
         {/* Mode toggle */}
-        <div className="flex gap-3 mb-7">
+        <div className="club-mode-toggle">
           <button
             onClick={() => setMode('join')}
-            className={`flex-1 py-3 rounded-md text-sm font-medium transition border ${mode === 'join' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
+            className={`club-mode-button ${mode === 'join' ? 'active' : ''}`}
           >
             Join existing club
           </button>
           <button
             onClick={() => setMode('create')}
-            className={`flex-1 py-3 rounded-md text-sm font-medium transition border ${mode === 'create' ? 'bg-[#F59E0B]/10 border-[#F59E0B] text-[#F0EDE8]' : 'bg-[#171717] border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8]'}`}
+            className={`club-mode-button ${mode === 'create' ? 'active' : ''}`}
           >
             Create new club
           </button>
