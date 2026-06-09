@@ -21,7 +21,7 @@ const createEvent = async (req, res) => {
 }
 
 const getAllEvents = async (req, res) => {
-  const { sort, category } = req.query
+  const { sort, category, club_id } = req.query
   const userId = req.user?.id || null
 
   let query = `
@@ -41,6 +41,11 @@ const getAllEvents = async (req, res) => {
     )
   `
   const params = [userId]
+
+  if (club_id) {
+    params.push(club_id)
+    query += ` AND e.club_id = $${params.length}`
+  }
 
   if (category) {
     params.push(category)

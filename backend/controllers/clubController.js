@@ -34,4 +34,40 @@ const getMyClubs = async (req, res) => {
   }
 }
 
-module.exports = { getClubs, getMyClubs }
+const joinClub = async (req, res) => {
+  const { club_id, role } = req.body
+  try {
+    const validRoles = ['viewer', 'member', 'photographer']
+    const safeRole = validRoles.includes(role) ? role : 'viewer'
+
+    const clubCheck = await pool.query('SELECT id FROM clubs WHERE id=$1', [club_id])
+    if (clubCheck.rows.length === 0) return res.status(404).json({ message: 'Club not found' })
+
+    await pool.query(
+      'INSERT INTO club_members (club_id, user_id, role) VALUES ($1,$2,$3) ON CONFLICT (club_id, user_id) DO UPDATE SET role=$3',
+      [club_id, req.user.id, safeRole]
+    )
+    res.json({ message: 'Joined club successfully' })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+const createClub = async (req, res) => {
+  const { name, description } = req.body
+  try {
+    const club = await pool.query(
+      'INSERT INTO clubs (name, description, created_by) VALUES ($1,$2,$3) RETURNING *',
+      [name, description, req.user.id]
+    )
+    await pool.query(
+      'INSERT INTO club_members (club_id, user_id, role) VALUES ($1,$2,$3)',
+      [club.rows[0].id, req.user.id, 'admin']
+    )
+    res.status(201).json(club.rows[0])
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+module.exports = { getClubs, getMyClubs, joinClub, createClub }

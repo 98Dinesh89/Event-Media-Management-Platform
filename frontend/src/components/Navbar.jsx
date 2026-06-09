@@ -3,17 +3,21 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useSocket } from '@/context/SocketContext'
-import { useEffect, useState } from 'react'
-import { Bell, Search, LogOut, User, Camera, Home, Calendar } from 'lucide-react'
+import { useClub } from '@/context/ClubContext'
+import { useEffect, useState, useRef } from 'react'
+import { Bell, Search, LogOut, Camera, Home, Calendar, ChevronDown, Plus, Users } from 'lucide-react'
 import api from '@/lib/api'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
   const { socket } = useSocket()
+  const { selectedClub, selectClub, currentRole } = useClub()
   const router = useRouter()
   const [notifications, setNotifications] = useState([])
   const [showNotifs, setShowNotifs] = useState(false)
+  const [showClubMenu, setShowClubMenu] = useState(false)
   const [unread, setUnread] = useState(0)
+  const clubMenuRef = useRef(null)
 
   useEffect(() => {
     if (user) {
@@ -26,12 +30,23 @@ export default function Navbar() {
 
   useEffect(() => {
     if (socket) {
-      socket.on('notification', (data) => {
+      socket.on('notification', () => {
         setUnread(prev => prev + 1)
         api.get('/social/notifications').then(res => setNotifications(res.data))
       })
     }
   }, [socket])
+
+  // Close club menu when clicking outside
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (clubMenuRef.current && !clubMenuRef.current.contains(e.target)) {
+        setShowClubMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -46,14 +61,84 @@ export default function Navbar() {
     }
   }
 
+  const clubs = user?.clubs || []
+  const displayClubName = selectedClub ? selectedClub.name : 'All Clubs'
+  const displayRole = selectedClub ? currentRole : null
+
   return (
-    <nav className="h-14 border-b border-[#1e1e1e] bg-[#0f0f0f] flex items-center px-6 gap-6 sticky top-0 z-50">
-      <Link href="/dashboard" className="text-white font-semibold text-sm tracking-tight flex items-center gap-2">
+    <nav className="h-14 border-b border-[#1e1e1e] bg-[#0f0f0f] flex items-center px-6 gap-4 sticky top-0 z-50">
+      <Link href="/dashboard" className="text-white font-semibold text-sm tracking-tight flex items-center gap-2 mr-2">
         <Camera size={18} className="text-purple-400" />
         MediaVault
       </Link>
 
-      <div className="flex items-center gap-1 ml-2">
+      {/* Club switcher */}
+      {user && (
+        <div className="relative" ref={clubMenuRef}>
+          <button
+            onClick={() => setShowClubMenu(!showClubMenu)}
+            className="flex items-center gap-1.5 bg-[#141414] border border-[#2a2a2a] hover:border-[#3a3a3a] text-sm px-3 py-1.5 rounded-lg transition"
+          >
+            <Users size={13} className="text-purple-400" />
+            <span className="text-gray-300">{displayClubName}</span>
+            {displayRole && (
+              <span className="text-xs text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded">
+                {displayRole}
+              </span>
+            )}
+            <ChevronDown size={13} className="text-gray-500" />
+          </button>
+
+          {showClubMenu && (
+            <div className="absolute left-0 top-10 w-56 bg-[#141414] border border-[#2a2a2a] rounded-xl shadow-xl z-50 overflow-hidden">
+              {/* All clubs option */}
+              <button
+                onClick={() => { selectClub(null); setShowClubMenu(false) }}
+                className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1e1e1e] ${!selectedClub ? 'text-purple-400' : 'text-gray-300'}`}
+              >
+                <Users size={14} />
+                All Clubs
+                {!selectedClub && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400" />}
+              </button>
+
+              {clubs.length > 0 && <div className="border-t border-[#2a2a2a]" />}
+
+              {/* Individual clubs */}
+              {clubs.map(club => (
+                <button
+                  key={club.id}
+                  onClick={() => { selectClub(club); setShowClubMenu(false) }}
+                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition hover:bg-[#1e1e1e] ${selectedClub?.id === club.id ? 'text-purple-400' : 'text-gray-300'}`}
+                >
+                  <div className="w-5 h-5 rounded bg-purple-600/30 flex items-center justify-center shrink-0">
+                    <span className="text-xs text-purple-300">{club.name[0].toUpperCase()}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate">{club.name}</p>
+                    <p className="text-xs text-gray-500 capitalize">{club.role}</p>
+                  </div>
+                  {selectedClub?.id === club.id && <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />}
+                </button>
+              ))}
+
+              <div className="border-t border-[#2a2a2a]" />
+
+              {/* Join/Create club */}
+              <Link
+                href="/clubs/join"
+                onClick={() => setShowClubMenu(false)}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-[#1e1e1e] transition"
+              >
+                <Plus size={14} />
+                Join or create club
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Nav links */}
+      <div className="flex items-center gap-1">
         <Link href="/dashboard" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
           <Home size={15} />
           Home
@@ -69,6 +154,7 @@ export default function Navbar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        {/* Notifications */}
         <div className="relative">
           <button
             onClick={toggleNotifs}
@@ -94,7 +180,7 @@ export default function Navbar() {
                       <p className="text-sm text-gray-300">
                         <span className="text-white font-medium">{n.from_name}</span> {n.message}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">{new Date(n.created_at).toRelativeTimeString?.() || new Date(n.created_at).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-500 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
                     </div>
                   ))
                 )}
@@ -103,6 +189,7 @@ export default function Navbar() {
           )}
         </div>
 
+        {/* Profile */}
         <Link href="/profile" className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-[#1a1a1a] transition">
           <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center">
             <span className="text-xs text-white font-medium">{user?.name?.[0]?.toUpperCase()}</span>

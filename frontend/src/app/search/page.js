@@ -6,6 +6,7 @@ import { Search, X } from 'lucide-react'
 import MediaGrid from '@/components/MediaGrid'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
+import { useClub } from '@/context/ClubContext'
 
 export default function SearchPage() {
   const router = useRouter()
@@ -18,6 +19,7 @@ export default function SearchPage() {
   const [results, setResults] = useState([])
   const [searched, setSearched] = useState(false)
   const [loading, setLoading] = useState(false)
+  const { selectedClub } = useClub()
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -36,6 +38,7 @@ export default function SearchPage() {
       if (fromDate) params.append('from_date', fromDate)
       if (toDate) params.append('to_date', toDate)
       if (uploader) params.append('uploader', uploader)
+      if (selectedClub) params.append('club_id', selectedClub.id)
       const res = await api.get(`/ai/search?${params}`)
       setResults(res.data)
     } catch (err) {

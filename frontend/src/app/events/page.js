@@ -6,6 +6,7 @@ import api from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
 import { Plus, Calendar, Filter, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useClub } from '@/context/ClubContext'
 
 export default function EventsPage() {
   const router = useRouter()
@@ -15,6 +16,7 @@ export default function EventsPage() {
   const [sort, setSort] = useState('created_at')
   const [category, setCategory] = useState('')
   const [search, setSearch] = useState('')
+  const { selectedClub } = useClub()
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -26,13 +28,16 @@ export default function EventsPage() {
 
   useEffect(() => {
     fetchEvents()
-  }, [sort, category])
+  }, [sort, category, selectedClub])
+
+  
   const fetchEvents = async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
       if (sort) params.append('sort', sort)
       if (category) params.append('category', category)
+      if (selectedClub) params.append('club_id', selectedClub.id)
       const res = await api.get(`/events?${params}`)
       setEvents(res.data)
     } catch (err) {

@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import api from '@/lib/api'
 import { Calendar, Image, Plus, ArrowRight, Tag } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useClub } from '@/context/ClubContext'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -13,6 +14,7 @@ export default function Dashboard() {
   const [events, setEvents] = useState([])
   const [recentMedia, setRecentMedia] = useState([])
   const [loading, setLoading] = useState(true)
+  const { selectedClub, currentRole } = useClub()
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -24,7 +26,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const eventsRes = await api.get('/events')
+        const params = new URLSearchParams()
+        if (selectedClub) params.append('club_id', selectedClub.id)
+        const eventsRes = await api.get(`/events?${params}`)
         setEvents(eventsRes.data.slice(0, 6))
       } catch (err) {
         console.error(err)
@@ -33,7 +37,7 @@ export default function Dashboard() {
       }
     }
     fetchData()
-  }, [])
+  }, [selectedClub])
 
   const canCreateEvent = user?.clubs?.some(club => ['admin', 'photographer'].includes(club.role))
   const roleSummary = user?.clubs?.length
@@ -70,7 +74,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             { label: 'Total Events', value: String(events.length), icon: Calendar },
-            { label: 'Club Roles', value: roleSummary, icon: Tag },
+            { label: 'Your Role', value: roleSummary, icon: Tag },
             { label: 'Media Uploaded', value: '0', icon: Image },
             ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-4">

@@ -1,5 +1,6 @@
 import { AuthProvider } from '@/context/AuthContext'
 import { SocketProvider } from '@/context/SocketContext'
+import { ClubProvider } from '@/context/ClubContext'
 import './globals.css'
 
 export const metadata = {
@@ -12,9 +13,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AuthProvider>
-          <SocketProvider>
-            {children}
-          </SocketProvider>
+          <ClubProvider>
+            <SocketProvider>
+              {children}
+            </SocketProvider>
+          </ClubProvider>
         </AuthProvider>
       </body>
     </html>

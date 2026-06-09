@@ -23,6 +23,10 @@ const searchMedia = async (req, res) => {
     if (from_date) { params.push(from_date); query += ` AND m.created_at >= $${params.length}` }
     if (to_date) { params.push(to_date); query += ` AND m.created_at <= $${params.length}` }
     if (uploader) { params.push(`%${uploader}%`); query += ` AND u.name ILIKE $${params.length}` }
+    if (req.query.club_id) {
+      params.push(req.query.club_id)
+      query += ` AND e.club_id = $${params.length}`
+    }
     query += ' ORDER BY m.created_at DESC LIMIT 50'
     const result = await pool.query(query, params)
     res.json(result.rows)
