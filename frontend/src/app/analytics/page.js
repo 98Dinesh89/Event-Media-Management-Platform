@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-[#171717] border border-[#2A2622] rounded-md h-28 animate-pulse" />
+              <div key={i} className="skeleton-card" />
             ))}
           </div>
         ) : stats ? (

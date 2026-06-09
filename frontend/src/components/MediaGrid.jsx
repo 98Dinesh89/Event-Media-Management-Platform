@@ -121,7 +121,7 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
 
   if (media.length === 0) {
     return (
-      <div className="border border-dashed border-[#2A2622] rounded-md p-16 sm:p-20 text-center bg-[#171717]">
+      <div className="inline-empty-state">
         <p className="text-[#7C7A74] text-sm">No media here yet</p>
       </div>
     )
@@ -220,27 +220,34 @@ export default function MediaGrid({ media, onMediaDeleted, eventRole }) {
               </button>
 
               {showTagSearch && (
-                <div className="absolute top-16 left-0 w-full bg-[#171717] border border-[#2A2622] rounded-md p-3 z-10">
+                <div className="tag-popover">
+                  <p className="tag-popover-title">Tag someone</p>
                   <input
                     type="text"
                     value={tagSearch}
                     onChange={e => { setTagSearch(e.target.value); searchUsersForTag(e.target.value) }}
                     placeholder="Search users to tag..."
-                    className="w-full bg-[#111111] border border-[#2A2622] rounded px-3 py-2 text-xs text-[#F0EDE8] focus:outline-none focus:border-[#F59E0B] mb-2"
+                    className="tag-search-input"
                   />
-                  {tagResults.map(u => (
-                    <div
-                      key={u.id}
-                      onClick={() => handleTagUser(u.id)}
-                      className="flex items-center gap-2.5 px-2 py-2 hover:bg-[#1A1A1A] rounded cursor-pointer"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-[#F59E0B] flex items-center justify-center">
-                        <span className="text-xs text-[#111111] font-semibold">{u.name[0].toUpperCase()}</span>
-                      </div>
-                      <span className="text-xs text-[#F0EDE8]">{u.name}</span>
-                      <span className="text-xs text-[#7C7A74] ml-auto">{u.role}</span>
-                    </div>
-                  ))}
+                  <div className="tag-result-list">
+                    {tagResults.length === 0 ? (
+                      <p className="text-xs text-[#7C7A74] px-1 py-2">Search for a user to tag</p>
+                    ) : (
+                      tagResults.map(u => (
+                        <div
+                          key={u.id}
+                          onClick={() => handleTagUser(u.id)}
+                          className="tag-result-row"
+                        >
+                          <div className="mini-avatar">
+                            <span>{u.name[0].toUpperCase()}</span>
+                          </div>
+                          <span className="text-sm">{u.name}</span>
+                          <span className="text-xs text-[#7C7A74] ml-auto">{u.role}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               )}
 

@@ -104,11 +104,11 @@ export default function Dashboard() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-[#171717] border border-[#2A2622] rounded-md h-48 animate-pulse" />
+              <div key={i} className="skeleton-card" />
             ))}
           </div>
         ) : events.length === 0 ? (
-          <div className="border border-dashed border-[#2A2622] rounded-md p-16 text-center bg-[#171717]">
+          <div className="inline-empty-state">
             <Calendar size={28} className="text-[#7C7A74] mx-auto mb-3" />
             <p className="text-[#B5B1AA] text-sm">No events yet</p>
             {canCreateEvent && (

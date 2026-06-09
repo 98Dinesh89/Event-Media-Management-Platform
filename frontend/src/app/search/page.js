@@ -70,7 +70,7 @@ export default function SearchPage() {
         </div>
 
         <form onSubmit={handleSearch} className="premium-form-card mb-10" style={{ width: '100%', maxWidth: 'none' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-[#7C7A74] mb-1.5 block">Event name or caption</label>
               <input
@@ -123,7 +123,7 @@ export default function SearchPage() {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="form-actions">
             <button
               type="submit"
               className="premium-button premium-button-primary"
@@ -147,7 +147,7 @@ export default function SearchPage() {
         {loading && (
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
+              <div key={i} className="skeleton-square" />
             ))}
           </div>
         )}

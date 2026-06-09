@@ -249,15 +249,15 @@ export default function EventPage() {
 
             {/* QR Modal — place here */}
             {showQR && (
-              <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                <div className="bg-[#171717] border border-[#2A2622] rounded-lg p-6 flex flex-col items-center gap-5 w-80">
-                  <div className="flex items-center justify-between w-full">
+              <div className="modal-backdrop">
+                <div className="qr-modal-card">
+                  <div className="qr-modal-header">
                     <h2 className="text-[#F0EDE8] font-medium text-sm">Share event</h2>
-                    <button onClick={() => setShowQR(false)} className="text-[#7C7A74] hover:text-[#F0EDE8] p-1.5">
+                    <button onClick={() => setShowQR(false)} className="upload-close-button">
                       <X size={18} />
                     </button>
                   </div>
-                  <div className="bg-white p-4 rounded-md">
+                  <div className="qr-code-box">
                     <QRCodeSVG
                       value={typeof window !== 'undefined' ? window.location.href : ''}
                       size={180}
@@ -271,7 +271,7 @@ export default function EventPage() {
                       navigator.clipboard.writeText(window.location.href)
                       alert('Link copied!')
                     }}
-                    className="w-full bg-[#1A1A1A] hover:bg-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] text-sm py-2.5 rounded-md transition"
+                    className="premium-button premium-button-secondary w-full"
                   >
                     Copy link
                   </button>
@@ -291,7 +291,7 @@ export default function EventPage() {
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
                   {[...Array(8)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-[#171717] rounded-md animate-pulse" />
+                  <div key={i} className="skeleton-square" />
                   ))}
                 </div>
               ) : (
