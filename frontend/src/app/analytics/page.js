@@ -78,8 +78,11 @@ export default function AnalyticsPage() {
 
             {/* Top events */}
             {stats.top_events?.length > 0 && (
-              <div className="mb-10">
-                <h2 className="section-title mb-4">Top Events by Media</h2>
+              <section className="analytics-section">
+                <div className="analytics-section-header">
+                  <h2 className="section-title">Top Events by Media</h2>
+                  <p className="analytics-section-kicker">Ranked by upload volume</p>
+                </div>
                 <div className="data-card">
                   {stats.top_events.map((event, i) => (
                     <div key={event.id} className="data-row">
@@ -101,14 +104,17 @@ export default function AnalyticsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
             {/* Most liked media */}
             {stats.most_liked?.length > 0 && (
-              <div className="mb-10">
-                <h2 className="section-title mb-4">Most Liked Photos</h2>
-                <div className="media-grid">
+              <section className="analytics-section">
+                <div className="analytics-section-header">
+                  <h2 className="section-title">Most Liked Photos</h2>
+                  <p className="analytics-section-kicker">Highest engagement</p>
+                </div>
+                <div className="analytics-media-grid">
                   {stats.most_liked.map(media => (
                     <div key={media.id} className="analytics-media-card group">
                       <img src={media.thumbnail_url || media.url} alt="" />
@@ -119,16 +125,19 @@ export default function AnalyticsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
             {/* Recent activity */}
             {stats.recent_uploads?.length > 0 && (
-              <div>
-                <h2 className="section-title mb-4">Recent Uploads</h2>
-                <div className="data-card">
+              <section className="analytics-section">
+                <div className="analytics-section-header">
+                  <h2 className="section-title">Recent Uploads</h2>
+                  <p className="analytics-section-kicker">Latest media activity</p>
+                </div>
+                <div className="analytics-recent-list">
                   {stats.recent_uploads.map((media, i) => (
-                    <div key={media.id} className="data-row">
+                    <div key={media.id} className="recent-upload-card">
                       <div className="upload-row-main">
                         <div className="w-12 h-12 rounded-[3px] overflow-hidden shrink-0">
                           <img src={media.thumbnail_url || media.url} alt="" className="w-full h-full object-cover" />
@@ -142,7 +151,7 @@ export default function AnalyticsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
           </>
         ) : (

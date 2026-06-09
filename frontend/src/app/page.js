@@ -12,40 +12,74 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F0EDE8]">
-      <nav className="h-16 border-b border-[#2A2622] flex items-center px-5 sm:px-8 justify-between">
-        <div className="flex items-center gap-2.5">
+    <div className="public-page">
+      <nav className="public-nav">
+        <div className="premium-brand">
           <Camera size={18} className="text-[#F59E0B]" />
-          <span className="text-[#F0EDE8] font-semibold text-sm">MediaVault</span>
+          <span>MediaVault</span>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-5 sm:px-8">
-        <section className="pt-24 pb-16 text-center">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-[#F0EDE8] mb-4 leading-tight">
-            MediaVault for university club media
-          </h1>
-          <p className="text-[#B5B1AA] text-sm sm:text-base mb-8 max-w-2xl mx-auto leading-relaxed">
-            A focused workspace for organizing event photos, managing club access, searching media, and finding the people who appear in your albums.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/register" className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111111] px-6 py-3 rounded-md text-sm font-semibold transition">
-              Start for free
-            </Link>
-            <Link href="/login" className="bg-[#171717] hover:bg-[#1A1A1A] border border-[#2A2622] text-[#B5B1AA] hover:text-[#F0EDE8] px-6 py-3 rounded-md text-sm transition">
-              Sign in
-            </Link>
+      <main className="public-main">
+        <section className="public-hero">
+          <div>
+            <h1 className="public-title">MediaVault for university club media</h1>
+            <p className="public-copy">
+              Organize event photos, manage club access, search media, and help members find the people who appear in every album.
+            </p>
+            <div className="public-actions">
+              <Link href="/register" className="premium-button premium-button-primary">
+                Start for free
+              </Link>
+              <Link href="/login" className="premium-button premium-button-secondary">
+                Sign in
+              </Link>
+            </div>
+          </div>
+
+          <div className="public-panel">
+            <p className="public-panel-title">Workspace overview</p>
+            <div className="public-preview-grid">
+              <div className="public-preview-tile">
+                <Camera size={20} />
+                <div>
+                  <p className="text-sm font-semibold text-[#F0EDE8]">Albums</p>
+                  <p className="text-xs text-[#7C7A74] mt-1">Event media in one place</p>
+                </div>
+              </div>
+              <div className="public-preview-tile">
+                <Shield size={20} />
+                <div>
+                  <p className="text-sm font-semibold text-[#F0EDE8]">Roles</p>
+                  <p className="text-xs text-[#7C7A74] mt-1">Admin, member, viewer</p>
+                </div>
+              </div>
+              <div className="public-preview-tile">
+                <Search size={20} />
+                <div>
+                  <p className="text-sm font-semibold text-[#F0EDE8]">Search</p>
+                  <p className="text-xs text-[#7C7A74] mt-1">Find photos quickly</p>
+                </div>
+              </div>
+              <div className="public-preview-tile">
+                <Users size={20} />
+                <div>
+                  <p className="text-sm font-semibold text-[#F0EDE8]">Face matches</p>
+                  <p className="text-xs text-[#7C7A74] mt-1">Personal media discovery</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="pb-20">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {features.map(({ icon: Icon, title }) => (
-              <div key={title} className="bg-[#171717] border border-[#2A2622] rounded-md px-5 py-4 flex items-center gap-4">
-                <div className="w-8 h-8 bg-[#1A1A1A] border border-[#2A2622] rounded-md flex items-center justify-center">
-                  <Icon size={15} className="text-[#F59E0B]" />
+        <section>
+          <div className="feature-grid">
+            {features.map(({ icon: Icon, title }, index) => (
+              <div key={title} className="feature-card">
+                <div className="feature-icon">
+                  <Icon size={18} className={index === 2 ? 'text-[#38BDF8]' : index === 4 ? 'text-[#A78BFA]' : 'text-[#F59E0B]'} />
                 </div>
-                <h3 className="text-[#F0EDE8] text-sm font-medium">{title}</h3>
+                <h3 className="text-[#F0EDE8] text-sm font-semibold">{title}</h3>
               </div>
             ))}
           </div>
