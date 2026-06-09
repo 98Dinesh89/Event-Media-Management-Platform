@@ -2,12 +2,8 @@ const router = require('express').Router()
 const { uploadMedia, getMediaByEvent, getMediaById, deleteMedia, downloadMedia } = require('../controllers/mediaController')
 const auth = require('../middlewares/auth')
 const upload = require('../middlewares/upload')
+const pool = require('../config/db')
 
-router.get('/event/:eventId', auth, getMediaByEvent)
-router.get('/:id', auth, getMediaById)
-router.post('/upload', auth, upload.array('files', 50), uploadMedia)
-router.delete('/:id', auth, deleteMedia)
-router.get('/download/:id', auth, downloadMedia)
 router.get('/my-count', auth, async (req, res) => {
   const { club_id } = req.query
   try {
@@ -25,5 +21,11 @@ router.get('/my-count', auth, async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 })
+
+router.get('/event/:eventId', auth, getMediaByEvent)
+router.get('/download/:id', auth, downloadMedia)
+router.get('/:id', auth, getMediaById)
+router.post('/upload', auth, upload.array('files', 50), uploadMedia)
+router.delete('/:id', auth, deleteMedia)
 
 module.exports = router
