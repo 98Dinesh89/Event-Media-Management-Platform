@@ -1,4 +1,4 @@
-# MediaVault — Event & Media Management Platform
+# MediaVault : Event & Media Management Platform
 
 A scalable web platform for clubs and organizations to upload, organize, access, and interact with event media seamlessly.
 
@@ -47,7 +47,6 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 - Infinite scrolling gallery
 - QR-based album sharing
 - Analytics dashboard
-- Club-based multi-role permission system
 - Real-time notifications
 
 ---
@@ -56,10 +55,10 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 
 | Role | Create Event | Upload Media | View Private Events | Like / Comment / Favourite |
 |------|:-----------:|:------------:|:-------------------:|:--------------------------:|
-| Admin | ✅ | ✅ Any event | ✅ | ✅ |
-| Photographer | ✅ | ✅ Own events only | ❌ | ✅ |
-| Member | ❌ | ❌ | ✅ | ✅ |
-| Viewer | ❌ | ❌ | ❌ | ✅ |
+| Admin | Yes | Yes, Any event | Yes | Yes |
+| Photographer | Yes | Yes, Own events only | No, Except own private events | Yes |
+| Member | No | No | Yes | Yes |
+| Viewer | No | No | No | Yes |
 
 ---
 
@@ -147,30 +146,49 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 ## Architecture
 
 ```
-┌─────────────────────────────────┐
-│     Client (Next.js / Vercel)   │
-│  Pages: Dashboard, Events,      │
-│  Gallery, Search, Profile,      │
-│  Analytics                      │
-└────────────────┬────────────────┘
-                 │ HTTP + WebSocket
-┌────────────────▼────────────────┐
-│   Backend API (Express/Railway) │
-│   Controllers: auth, events,    │
-│   media, social, ai, analytics  │
-└──┬─────────────┬────────────────┘
-   │             │
-┌──▼──┐    ┌────▼────────┐
-│     │    │  Cloudinary  │
-│ DB  │    │  (Storage +  │
-│ PG  │    │  AI Tagging) │
-│     │    └─────────────┘
-└──┬──┘
-   │
-┌──▼──────────┐
-│ Luxand API  │
-│ (Face Recog)│
-└─────────────┘
+┌─────────────────────────────────────────────┐
+│                   Users                     │
+│                                             │
+│ Admin | Photographer | Member | Viewer      │
+└──────────────────┬──────────────────────────┘
+                   │
+                   │ HTTPS + WebSocket
+                   ▼
+┌─────────────────────────────────────────────┐
+│      Frontend (Next.js + Tailwind CSS)      │
+│                                             │
+│ Dashboard | Events | Profile | Search       │
+│ Analytics | Notifications | Media Gallery   │
+│ Club Switching Interface                    │
+└──────────────────┬──────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────┐
+│      Backend API (Node.js + Express.js)      │
+│                                              │
+│ Auth Controller                              │
+│ Club Controller                              │
+│ Event Controller                             │
+│ Media Controller                             │
+│ Social Controller                            │
+│ AI Controller                                │
+│ Analytics Controller                         │
+└───────┬──────────────┬──────────────┬────────┘
+        │              │              │
+        ▼              ▼              ▼
+
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ PostgreSQL   │  │ Cloudinary   │  │ Socket.io    │
+│ (Supabase)   │  │ Media Store  │  │ Notifications│
+└──────────────┘  └──────────────┘  └──────────────┘
+        │
+        ▼
+┌─────────────────────────────────────────────┐
+│               AI Services                   │
+│                                             │
+│ Google Vision (Image Tagging)               │
+│ Luxand API (Facial Recognition)             │
+└─────────────────────────────────────────────┘
 ```
 
 ---
@@ -279,4 +297,6 @@ event-media-platform/
 
 ## Built By
 
-Dinesh Sunda — CIG Summer Project 2026
+Dinesh Sunda
+24117044
+CIG Summer Project 2026
