@@ -92,7 +92,7 @@ const login = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name, email, role, avatar_url, selfie_url, created_at FROM users WHERE id = $1', [req.user.id])
+    const result = await pool.query('SELECT id, name, email, role, avatar_url, created_at FROM users WHERE id = $1', [req.user.id])
     const clubs = await pool.query(
       `SELECT c.id, c.name, cm.role
        FROM club_members cm

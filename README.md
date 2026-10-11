@@ -2,25 +2,23 @@
 
 A scalable web platform for clubs and organizations to upload, organize, access, and interact with event media seamlessly.
 
-**Live Demo:** https://event-media-management-platform-tawny.vercel.app  
-**Backend API:** https://event-media-management-platform-production-4d0f.up.railway.app  
+**Live Demo:** [https://event-media-management-platform-tawny.vercel.ap](https://event-media-management-platform-three.vercel.app/)
 **GitHub:** https://github.com/98Dinesh89/event-media-management-platform
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 16, Tailwind CSS, Lucide React |
-| Backend | Node.js, Express.js |
-| Database | PostgreSQL (Supabase) |
-| Cloud Storage | Cloudinary (auto compression + AI tagging) |
-| Real-time | Socket.io |
-| Auth | JWT + bcrypt |
-| Face Recognition | Luxand API |
-| AI Image Tagging | Google Vision via Cloudinary |
-| Deployment | Vercel (frontend) + Railway (backend) |
+| Layer            | Technology                                 |
+| ---------------- | ------------------------------------------ |
+| Frontend         | Next.js 16, Tailwind CSS, Lucide React     |
+| Backend          | Node.js, Express.js                        |
+| Database         | PostgreSQL (Supabase)                      |
+| Cloud Storage    | Cloudinary (auto compression + AI tagging) |
+| Real-time        | Socket.io                                  |
+| Auth             | JWT + bcrypt                               |
+| AI Image Tagging | Google Vision via Cloudinary               |
+| Deployment       | Vercel (frontend) + Railway (backend)      |
 
 ---
 
@@ -35,7 +33,6 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 - **Social Features** — Like, comment, favourite, download, share via QR code, tag friends in photos.
 - **Real-time Notifications** — Socket.io powered live notifications for likes, comments, and tags.
 - **AI Smart Tagging** — Google Vision automatically tags uploaded images with labels like people, landscape, sports, crowd etc.
-- **Facial Recognition** — Upload a selfie, find all photos you appear in across all events (Luxand API).
 - **Advanced Search** — Search by event name, tag, upload date, or uploader name.
 - **Watermarked Downloads** — Auto watermark on download includes club name, event name, and user role.
 - **Analytics Dashboard** — Total events, media, likes, comments, top events by media count, most liked photos, recent uploads.
@@ -53,12 +50,12 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 
 ## Role Permissions
 
-| Role | Create Event | Upload Media | View Private Events | Like / Comment / Favourite |
-|------|:-----------:|:------------:|:-------------------:|:--------------------------:|
-| Admin | Yes | Yes, Any event | Yes | Yes |
-| Photographer | Yes | Yes, Own events only | No, Except own private events | Yes |
-| Member | No | No | Yes | Yes |
-| Viewer | No | No | No | Yes |
+| Role         | Create Event |     Upload Media     |      View Private Events      | Like / Comment / Favourite |
+| ------------ | :----------: | :------------------: | :---------------------------: | :------------------------: |
+| Admin        |     Yes      |    Yes, Any event    |              Yes              |            Yes             |
+| Photographer |     Yes      | Yes, Own events only | No, Except own private events |            Yes             |
+| Member       |      No      |          No          |              Yes              |            Yes             |
+| Viewer       |      No      |          No          |              No               |            Yes             |
 
 ---
 
@@ -66,7 +63,7 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 
 ### Tables
 
-- **users** — id, name, email, password, role, avatar_url, selfie_url, selfie_public_id, created_at
+- **users** — id, name, email, password, role, avatar_url, created_at
 - **clubs** — id, name, description, created_by, created_at
 - **club_members** — club_id, user_id, role, joined_at
 - **events** — id, title, description, category, event_date, is_public, created_by, club_id, cover_image, created_at
@@ -75,7 +72,6 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 - **comments** — id, user_id, media_id, text, created_at
 - **favourites** — id, user_id, media_id, created_at
 - **notifications** — id, user_id, from_user_id, type, media_id, message, is_read, created_at
-- **face_matches** — id, user_id, media_id, confidence, created_at
 - **media_tags** — id, media_id, tagged_by, tagged_user_id, created_at
 
 ---
@@ -83,63 +79,67 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 ## API Endpoints
 
 ### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register new user |
-| POST | /api/auth/login | Login |
-| GET | /api/auth/me | Get current user profile |
+
+| Method | Endpoint           | Description              |
+| ------ | ------------------ | ------------------------ |
+| POST   | /api/auth/register | Register new user        |
+| POST   | /api/auth/login    | Login                    |
+| GET    | /api/auth/me       | Get current user profile |
 
 ### Clubs
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/clubs | List all clubs |
-| GET | /api/clubs/mine | Get my clubs with roles |
-| POST | /api/clubs/join | Join an existing club |
-| POST | /api/clubs/create | Create a new club |
+
+| Method | Endpoint          | Description             |
+| ------ | ----------------- | ----------------------- |
+| GET    | /api/clubs        | List all clubs          |
+| GET    | /api/clubs/mine   | Get my clubs with roles |
+| POST   | /api/clubs/join   | Join an existing club   |
+| POST   | /api/clubs/create | Create a new club       |
 
 ### Events
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/events | List events (filter by club, category, sort) |
-| POST | /api/events | Create event |
-| GET | /api/events/:id | Get single event |
-| PUT | /api/events/:id | Update event |
-| DELETE | /api/events/:id | Delete event |
+
+| Method | Endpoint        | Description                                  |
+| ------ | --------------- | -------------------------------------------- |
+| GET    | /api/events     | List events (filter by club, category, sort) |
+| POST   | /api/events     | Create event                                 |
+| GET    | /api/events/:id | Get single event                             |
+| PUT    | /api/events/:id | Update event                                 |
+| DELETE | /api/events/:id | Delete event                                 |
 
 ### Media
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/media/event/:eventId | Get media for an event |
-| POST | /api/media/upload | Upload media files (bulk supported) |
-| GET | /api/media/download/:id | Download with watermark |
-| GET | /api/media/my-count | Count media uploaded by current user |
-| DELETE | /api/media/:id | Delete media |
+
+| Method | Endpoint                  | Description                          |
+| ------ | ------------------------- | ------------------------------------ |
+| GET    | /api/media/event/:eventId | Get media for an event               |
+| POST   | /api/media/upload         | Upload media files (bulk supported)  |
+| GET    | /api/media/download/:id   | Download with watermark              |
+| GET    | /api/media/my-count       | Count media uploaded by current user |
+| DELETE | /api/media/:id            | Delete media                         |
 
 ### Social
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/social/like | Toggle like on media |
-| POST | /api/social/comment | Add comment |
-| GET | /api/social/comments/:mediaId | Get comments for media |
-| POST | /api/social/favourite | Toggle favourite |
-| GET | /api/social/favourites | Get my favourites |
-| POST | /api/social/tag | Tag a user in a photo |
-| GET | /api/social/search-users | Search users to tag |
-| GET | /api/social/notifications | Get notifications |
-| PUT | /api/social/notifications/read | Mark notifications as read |
+
+| Method | Endpoint                       | Description                |
+| ------ | ------------------------------ | -------------------------- |
+| POST   | /api/social/like               | Toggle like on media       |
+| POST   | /api/social/comment            | Add comment                |
+| GET    | /api/social/comments/:mediaId  | Get comments for media     |
+| POST   | /api/social/favourite          | Toggle favourite           |
+| GET    | /api/social/favourites         | Get my favourites          |
+| POST   | /api/social/tag                | Tag a user in a photo      |
+| GET    | /api/social/search-users       | Search users to tag        |
+| GET    | /api/social/notifications      | Get notifications          |
+| PUT    | /api/social/notifications/read | Mark notifications as read |
 
 ### AI / ML
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/ai/search | Advanced search by event, tag, date, uploader |
-| POST | /api/ai/selfie | Upload reference selfie |
-| POST | /api/ai/find-me | Find photos I appear in |
-| GET | /api/ai/my-photos | Get my face match results |
+
+| Method | Endpoint       | Description                                   |
+| ------ | -------------- | --------------------------------------------- |
+| GET    | /api/ai/search | Advanced search by event, tag, date, uploader |
 
 ### Analytics
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/analytics | Get analytics data (filter by club) |
+
+| Method | Endpoint       | Description                         |
+| ------ | -------------- | ----------------------------------- |
+| GET    | /api/analytics | Get analytics data (filter by club) |
 
 ---
 
@@ -187,7 +187,6 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 │               AI Services                   │
 │                                             │
 │ Google Vision (Image Tagging)               │
-│ Luxand API (Facial Recognition)             │
 └─────────────────────────────────────────────┘
 ```
 
@@ -196,10 +195,10 @@ A scalable web platform for clubs and organizations to upload, organize, access,
 ## Local Setup
 
 ### Prerequisites
+
 - Node.js 18+
 - Supabase account (free)
 - Cloudinary account (free)
-- Luxand account (free tier)
 
 ### 1. Clone the repository
 
@@ -224,7 +223,6 @@ JWT_SECRET=any_long_random_string
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
-LUXAND_API_KEY=your_luxand_key
 CLIENT_URL=http://localhost:3000
 ```
 
@@ -253,19 +251,20 @@ npm run dev
 ### 4. Database setup
 
 Run the following SQL files in Supabase SQL Editor:
-1. Main schema (create tables: users, events, media, likes, comments, favourites, notifications, face_matches, media_tags)
+
+1. Main schema (create tables: users, events, media, likes, comments, favourites, notifications, media_tags)
 2. `backend/db/club_roles.sql` (create clubs, club_members, add club_id to events)
 
 ---
 
 ## Deployment
 
-| Service | Platform | URL |
-|---------|----------|-----|
-| Frontend | Vercel | https://event-media-management-platform-tawny.vercel.app |
-| Backend | Railway | https://event-media-management-platform-production-4d0f.up.railway.app |
-| Database | Supabase | PostgreSQL hosted |
-| Media | Cloudinary | CDN hosted |
+| Service  | Platform   | URL                                                                    |
+| -------- | ---------- | ---------------------------------------------------------------------- |
+| Frontend | Vercel     | https://event-media-management-platform-tawny.vercel.app               |
+| Backend  | Railway    | https://event-media-management-platform-production-4d0f.up.railway.app |
+| Database | Supabase   | PostgreSQL hosted                                                      |
+| Media    | Cloudinary | CDN hosted                                                             |
 
 Both frontend and backend auto-deploy on every push to the `main` branch.
 
